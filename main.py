@@ -1,17 +1,21 @@
 import json
 from datetime import datetime
+from openai import OpenAI
+from config import OPENAI_API_KEY
+
+client = OpenAI(api_key=OPENAI_API_KEY)
 
 # Load DNA
 def load_dna():
     with open("dna.json", "r") as f:
         return json.load(f)
 
-# Trust log
+# Log system
 def log_action(text):
     with open("trust_log.txt", "a") as f:
         f.write(f"{datetime.now()} - {text}\n")
 
-# Simple memory
+# Memory
 def load_memory():
     try:
         with open("memory.json", "r") as f:
@@ -23,34 +27,42 @@ def save_memory(memory):
     with open("memory.json", "w") as f:
         json.dump(memory, f, indent=4)
 
-# Core Laya response logic
-def laya_response(user_input, memory, dna):
-    
-    log_action(f"User said: {user_input}")
+# 🧠 AI Brain
+def ask_ai(user_input, dna, memory):
 
-    # simple identity check (v0.1)
-    if dna["security"]["require_identity"]:
-        if "surya" not in user_input.lower():
-            return "Identity not verified. Please include your name."
+    system_prompt = f"""
+You are Laya, a private AI assistant.
 
-    # memory feature
-    if "remember" in user_input.lower():
-        memory["last_note"] = user_input
-        save_memory(memory)
-        return "I have stored this in memory."
+Rules (DNA):
+- Owner: {dna['owner']}
+- Privacy first
+- Always honest
+- Always explain
+- Never hide actions
+- Ask when unsure
 
-    if "what did you remember" in user_input.lower():
-        return memory.get("last_note", "I don't remember anything yet.")
+Memory:
+{memory}
 
-    # default response
-    return f"You said: {user_input}"
+User request:
+"""
 
-# Main loop
+    response = client.chat.completions.create(
+        model="gpt-4o-mini",
+        messages=[
+            {"role": "system", "content": system_prompt},
+            {"role": "user", "content": user_input}
+        ]
+    )
+
+    return response.choices[0].message.content
+
+# Main logic
 def main():
     dna = load_dna()
     memory = load_memory()
 
-    print("Laya v0.1 started. Type 'exit' to stop.")
+    print("🧬 Laya v0.2 started (AI Brain Active)")
 
     while True:
         user_input = input("You: ")
@@ -58,8 +70,24 @@ def main():
         if user_input.lower() == "exit":
             break
 
-        response = laya_response(user_input, memory, dna)
-        print("Laya:", response)
+        log_action(user_input)
+
+        # memory command
+        if "remember" in user_input.lower():
+            memory["note"] = user_input
+            save_memory(memory)
+            print("Laya: Stored in memory.")
+            continue
+
+        if "what did you remember" in user_input.lower():
+            print("Laya:", memory.get("note", "Nothing stored."))
+            continue
+
+        # AI response
+        reply = ask_ai(user_input, dna, memory)
+        print("Laya:", reply)
+
+        log_action("Laya responded")
 
 if __name__ == "__main__":
     main()
