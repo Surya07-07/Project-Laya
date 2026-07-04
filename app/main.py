@@ -7,6 +7,7 @@ from core.brain.processor import CommandProcessor
 
 
 def main():
+
     print("=" * 50)
     print("             PROJECT IGRIS")
     print("                  LAYA")
@@ -27,10 +28,11 @@ def main():
 
     brain = CommandProcessor(memory, heart)
 
-    print("\nLaya is ready!")
+    print("\nLaya Ready.")
     print("Type 'exit' to quit.\n")
 
     while True:
+
         command = input("You: ")
 
         if command.lower() == "exit":
@@ -38,6 +40,7 @@ def main():
             break
 
         response = brain.execute(command)
+
         print("Laya:", response)
 
 

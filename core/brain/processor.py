@@ -1,26 +1,32 @@
+from core.ai.ollama_client import OllamaClient
+
+
 class CommandProcessor:
+
     def __init__(self, memory, heart):
         self.memory = memory
         self.heart = heart
+        self.ai = OllamaClient()
 
     def execute(self, command):
-        command = command.strip().lower()
 
-        if command == "who are you":
-            return "I am Laya, your private AI assistant."
+        command = command.strip()
 
-        if command == "remember my name":
-            if self.heart.decide("remember") == "Approved":
-                self.memory.remember("name", "Surya")
-                return "I'll remember your name."
+        if command.lower() == "exit":
+            return None
 
-        if command == "what is my name":
+        if command.lower() == "what is my name":
             name = self.memory.recall("name")
+
             if name:
                 return f"Your name is {name}."
-            return "I don't know your name yet."
 
-        if command == "internet":
-            return self.heart.decide("internet")
+        if command.lower().startswith("remember my name is"):
 
-        return "Sorry, I don't understand that command yet."
+            name = command[20:].strip()
+
+            self.memory.remember("name", name)
+
+            return f"I'll remember your name, {name}."
+
+        return self.ai.ask(command)
