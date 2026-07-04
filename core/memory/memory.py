@@ -1,6 +1,10 @@
+from core.memory.database import Database
+
+
 class Memory:
     def __init__(self):
-        self.memories = []
+        self.database = Database()
 
     def load(self):
-        print("📦 Memory Loaded")
+        self.database.initialize()
+        print("📦 Memory Vault Loaded")
