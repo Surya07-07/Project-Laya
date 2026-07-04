@@ -1,0 +1,13 @@
+{
+    "name": "Laya",
+    "codename": "IGRIS",
+    "version": "0.1",
+
+    "principles": {
+        "privacy_first": true,
+        "local_first": true,
+        "internet_requires_permission": true,
+        "encrypt_sensitive_data": true,
+        "explain_actions": true
+    }
+}

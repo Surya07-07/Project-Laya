@@ -1,26 +1,34 @@
+from core.dna.dna import DNA
+from core.heart.heart import Heart
+from core.guardian.guardian import Guardian
+from core.memory.memory import Memory
+from core.gateway.gateway import Gateway
+
+
 def main():
-    print("=" * 40)
-    print("        PROJECT IGRIS")
-    print("             LAYA")
-    print("=" * 40)
+    print("=" * 45)
+    print("          PROJECT IGRIS")
+    print("               LAYA")
+    print("=" * 45)
     print()
 
-    modules = [
-        "DNA",
-        "Heart",
-        "Guardian",
-        "Memory",
-        "Gateway"
-    ]
+    dna = DNA()
+    heart = Heart()
+    guardian = Guardian()
+    memory = Memory()
+    gateway = Gateway()
 
-    for module in modules:
-        print(f"Loading {module:<10}...........OK")
+    dna.load()
+    heart.load()
+    guardian.load()
+    memory.load()
+    gateway.load()
 
     print()
-    print("System Ready")
-    print("Hello Surya.")
-    print("Welcome to Laya!")
-    print()
+    print("✅ System Ready")
+    print("Hello Surya!")
+    print("Laya Core v0.1 is running.")
+
 
 if __name__ == "__main__":
     main()
