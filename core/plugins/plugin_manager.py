@@ -7,10 +7,13 @@ class PluginManager:
         self.plugins[name] = plugin
 
     def execute(self, name, *args):
-        if name not in self.plugins:
+
+        plugin = self.plugins.get(name)
+
+        if plugin is None:
             return f"Plugin '{name}' not found."
 
-        return self.plugins[name].run(*args)
+        return plugin.run(*args)
 
-    def list_plugins(self):
+    def available(self):
         return list(self.plugins.keys())

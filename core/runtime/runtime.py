@@ -6,41 +6,64 @@ from core.guardian.guardian import Guardian
 from core.heart.heart import Heart
 from core.memory.memory import Memory
 from core.gateway.gateway import Gateway
+
 from core.brain.processor import CommandProcessor
+
+from core.plugins.plugin_manager import PluginManager
+from plugins.calculator.plugin import CalculatorPlugin
+
+from core.router.router import TaskRouter
 
 
 class LayaRuntime:
 
     def __init__(self):
 
-        # Load Configuration
+        # Configuration
         self.config = Config()
 
-        # Initialize Core Modules
+        # Core Modules
         self.dna = DNA()
         self.guardian = Guardian()
         self.heart = Heart(self.guardian)
         self.memory = Memory()
         self.gateway = Gateway()
 
-        # Initialize Brain
+        # Brain
         self.brain = CommandProcessor(
             self.memory,
             self.heart
+        )
+
+        # Plugin Manager
+        self.plugins = PluginManager()
+
+        self.plugins.register(
+            "calculator",
+            CalculatorPlugin()
+        )
+
+        # Router
+        self.router = TaskRouter(
+            self.brain,
+            self.plugins
         )
 
     def start(self):
 
         Logger.info("Starting Laya Runtime")
 
-        print("=" * 55)
-        print("               PROJECT IGRIS")
-        print("                    LAYA")
-        print("=" * 55)
+        print("=" * 60)
+        print("                PROJECT IGRIS")
+        print("                     LAYA")
+        print("=" * 60)
 
-        print(f"\nAssistant : {self.config.get('assistant', 'name')}")
-        print(f"Version   : {self.config.get('assistant', 'version')}")
-        print(f"AI Model  : {self.config.get('ai', 'model')}")
+        print()
+
+        print("Assistant :", self.config.get("assistant", "name"))
+        print("Version   :", self.config.get("assistant", "version"))
+        print("AI Model  :", self.config.get("ai", "model"))
+
         print()
 
         self.dna.load()
@@ -58,7 +81,7 @@ class LayaRuntime:
         self.gateway.load()
         Logger.info("Gateway Loaded")
 
-        print("\n✅ Laya Runtime Ready!\n")
+        print("\n✅ Runtime Ready\n")
 
     def chat(self):
 
@@ -71,11 +94,14 @@ class LayaRuntime:
             Logger.info(f"USER : {user}")
 
             if user.lower() == "exit":
+
                 Logger.info("Runtime Closed")
+
                 print("Laya : Goodbye!")
+
                 break
 
-            response = self.brain.execute(user)
+            response = self.router.route(user)
 
             Logger.info(f"LAYA : {response}")
 
