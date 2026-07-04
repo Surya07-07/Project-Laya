@@ -12,17 +12,25 @@ def main():
     print("=" * 45)
     print()
 
+    # Initialize Core Modules
     dna = DNA()
     heart = Heart()
     guardian = Guardian()
     memory = Memory()
     gateway = Gateway()
 
+    # Load Core Modules
     dna.load()
     heart.load()
     guardian.load()
     memory.load()
     gateway.load()
+
+    print()
+
+    # Test Heart Decision Engine
+    decision = heart.decide("internet")
+    print(f"Decision: {decision}")
 
     print()
     print("✅ System Ready")
