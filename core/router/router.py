@@ -1,4 +1,5 @@
 from core.automation.system import SystemAutomation
+from core.brain.decision import DecisionEngine
 
 
 class TaskRouter:
@@ -9,31 +10,27 @@ class TaskRouter:
         self.plugins = plugin_manager
         self.system = SystemAutomation()
 
+        self.decision = DecisionEngine()
+
     def route(self, command):
 
-        command = command.strip()
+        task = self.decision.decide(command)
 
-        lower = command.lower()
+        if task == "automation":
 
-        # Calculator
-        if lower.startswith("calc "):
-            expression = command[5:]
-            return self.plugins.execute(
-                "calculator",
-                expression
+            return self.system.open_app(
+                command[5:].strip()
             )
 
-        # Open Applications
-        if lower.startswith("open "):
-            app = command[5:].strip()
-            return self.system.open_app(app)
+        if task == "calculator":
 
-        # Memory
-        if lower.startswith("remember"):
+            return self.plugins.execute(
+                "calculator",
+                command[5:]
+            )
+
+        if task == "memory":
+
             return self.brain.execute(command)
 
-        if lower == "what is my name":
-            return self.brain.execute(command)
-
-        # Everything else goes to AI
         return self.brain.execute(command)
