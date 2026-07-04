@@ -26,4 +26,4 @@ class OllamaClient:
             ]
         )
 
-        return response["message"]["content"]
+        return response["message"]["content"].strip()
