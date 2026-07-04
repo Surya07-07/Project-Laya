@@ -1,11 +1,21 @@
 import ollama
 
+from app.config import Config
+
 
 class OllamaClient:
-    def __init__(self, model="llama3.2:3b"):
-        self.model = model
+
+    def __init__(self):
+
+        config = Config()
+
+        self.model = config.get(
+            "ai",
+            "model"
+        )
 
     def ask(self, prompt):
+
         response = ollama.chat(
             model=self.model,
             messages=[

@@ -1,4 +1,5 @@
 from app.logger import Logger
+from app.config import Config
 
 from core.dna.dna import DNA
 from core.guardian.guardian import Guardian
@@ -12,12 +13,17 @@ class LayaRuntime:
 
     def __init__(self):
 
+        # Load Configuration
+        self.config = Config()
+
+        # Initialize Core Modules
         self.dna = DNA()
         self.guardian = Guardian()
         self.heart = Heart(self.guardian)
         self.memory = Memory()
         self.gateway = Gateway()
 
+        # Initialize Brain
         self.brain = CommandProcessor(
             self.memory,
             self.heart
@@ -25,9 +31,17 @@ class LayaRuntime:
 
     def start(self):
 
-        Logger.info("Starting Runtime")
+        Logger.info("Starting Laya Runtime")
 
-        print("\nStarting Laya...\n")
+        print("=" * 55)
+        print("               PROJECT IGRIS")
+        print("                    LAYA")
+        print("=" * 55)
+
+        print(f"\nAssistant : {self.config.get('assistant', 'name')}")
+        print(f"Version   : {self.config.get('assistant', 'version')}")
+        print(f"AI Model  : {self.config.get('ai', 'model')}")
+        print()
 
         self.dna.load()
         Logger.info("DNA Loaded")
@@ -44,9 +58,11 @@ class LayaRuntime:
         self.gateway.load()
         Logger.info("Gateway Loaded")
 
-        print("\nLaya Runtime Ready.\n")
+        print("\n✅ Laya Runtime Ready!\n")
 
     def chat(self):
+
+        print("Type 'exit' to quit.\n")
 
         while True:
 
@@ -55,11 +71,8 @@ class LayaRuntime:
             Logger.info(f"USER : {user}")
 
             if user.lower() == "exit":
-
                 Logger.info("Runtime Closed")
-
-                print("Laya : Goodbye.")
-
+                print("Laya : Goodbye!")
                 break
 
             response = self.brain.execute(user)

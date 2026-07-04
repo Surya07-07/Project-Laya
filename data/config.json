@@ -1,0 +1,25 @@
+{
+  "assistant": {
+    "name": "Laya",
+    "version": "0.4"
+  },
+  "ai": {
+    "provider": "ollama",
+    "model": "llama3.2:3b"
+  },
+  "voice": {
+    "enabled": false,
+    "wake_word": "Hey Laya"
+  },
+  "security": {
+    "privacy_first": true,
+    "internet_requires_permission": true
+  },
+  "memory": {
+    "database": "data/memory.db"
+  },
+  "logging": {
+    "enabled": true,
+    "file": "logs/laya.log"
+  }
+}
