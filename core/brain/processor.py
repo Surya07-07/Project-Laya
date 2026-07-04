@@ -1,32 +1,35 @@
+from core.memory.service import MemoryService
 from core.ai.ollama_client import OllamaClient
 
 
 class CommandProcessor:
 
     def __init__(self, memory, heart):
-        self.memory = memory
-        self.heart = heart
+
+        self.memory = MemoryService()
         self.ai = OllamaClient()
 
     def execute(self, command):
 
-        command = command.strip()
+        lower = command.lower()
 
-        if command.lower() == "exit":
-            return None
+        if lower.startswith("remember my"):
 
-        if command.lower() == "what is my name":
-            name = self.memory.recall("name")
+            text = command[12:]
 
-            if name:
-                return f"Your name is {name}."
+            if " is " in text:
 
-        if command.lower().startswith("remember my name is"):
+                key, value = text.split(" is ", 1)
 
-            name = command[20:].strip()
+                return self.memory.remember(
+                    key.strip(),
+                    value.strip()
+                )
 
-            self.memory.remember("name", name)
+        if lower.startswith("what is my"):
 
-            return f"I'll remember your name, {name}."
+            key = command[11:].strip().rstrip("?")
+
+            return self.memory.recall(key)
 
         return self.ai.ask(command)
