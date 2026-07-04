@@ -1,8 +1,9 @@
 from core.dna.dna import DNA
-from core.heart.heart import Heart
 from core.guardian.guardian import Guardian
+from core.heart.heart import Heart
 from core.memory.memory import Memory
 from core.gateway.gateway import Gateway
+from core.brain.processor import CommandProcessor
 
 
 def main():
@@ -24,22 +25,20 @@ def main():
     memory.load()
     gateway.load()
 
-    print()
+    brain = CommandProcessor(memory, heart)
 
-    # Save information
-    memory.remember("name", "Surya")
-    memory.remember("favorite_color", "Blue")
+    print("\nLaya is ready!")
+    print("Type 'exit' to quit.\n")
 
-    print()
+    while True:
+        command = input("You: ")
 
-    # Recall information
-    print("Name:", memory.recall("name"))
-    print("Favorite Color:", memory.recall("favorite_color"))
+        if command.lower() == "exit":
+            print("Laya: Goodbye!")
+            break
 
-    print()
-
-    print("✅ Memory Test Completed")
-    print("Laya Core v0.3")
+        response = brain.execute(command)
+        print("Laya:", response)
 
 
 if __name__ == "__main__":
