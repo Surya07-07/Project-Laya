@@ -6,36 +6,40 @@ from core.gateway.gateway import Gateway
 
 
 def main():
-    print("=" * 45)
-    print("          PROJECT IGRIS")
-    print("               LAYA")
-    print("=" * 45)
+    print("=" * 50)
+    print("             PROJECT IGRIS")
+    print("                  LAYA")
+    print("=" * 50)
     print()
 
-    # Initialize Core Modules
     dna = DNA()
-    heart = Heart()
     guardian = Guardian()
+    heart = Heart(guardian)
     memory = Memory()
     gateway = Gateway()
 
-    # Load Core Modules
     dna.load()
-    heart.load()
     guardian.load()
+    heart.load()
     memory.load()
     gateway.load()
 
     print()
 
-    # Test Heart Decision Engine
-    decision = heart.decide("internet")
-    print(f"Decision: {decision}")
+    actions = [
+        "open_app",
+        "remember",
+        "internet",
+        "delete_file"
+    ]
+
+    for action in actions:
+        result = heart.decide(action)
+        print(f"{action:15} -> {result}")
 
     print()
     print("✅ System Ready")
-    print("Hello Surya!")
-    print("Laya Core v0.1 is running.")
+    print("Laya Core v0.2")
 
 
 if __name__ == "__main__":

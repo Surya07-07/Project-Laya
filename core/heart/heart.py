@@ -1,14 +1,14 @@
 class Heart:
-    def __init__(self):
-        self.status = "Ready"
+    def __init__(self, guardian):
+        self.guardian = guardian
 
     def load(self):
         print("❤️ Heart Loaded")
 
-    def decide(self, action: str):
+    def decide(self, action):
         print(f"❤️ Thinking about: {action}")
 
-        if action.lower() == "internet":
-            return "Permission Required"
+        if self.guardian.authorize(action):
+            return "Approved"
 
-        return "Approved"
+        return "Permission Required"
