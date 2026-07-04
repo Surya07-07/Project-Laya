@@ -1,4 +1,3 @@
-from core.ai.intent.classifier import AIIntentClassifier
 from core.automation.system import SystemAutomation
 
 
@@ -10,39 +9,31 @@ class TaskRouter:
         self.plugins = plugin_manager
         self.system = SystemAutomation()
 
-        self.classifier = AIIntentClassifier()
-
     def route(self, command):
 
-        data = self.classifier.classify(command)
+        command = command.strip()
 
-        intent = data["intent"]
+        lower = command.lower()
 
-        if intent == "calculator":
-
+        # Calculator
+        if lower.startswith("calc "):
+            expression = command[5:]
             return self.plugins.execute(
                 "calculator",
-                data["expression"]
+                expression
             )
 
-        if intent == "open_app":
+        # Open Applications
+        if lower.startswith("open "):
+            app = command[5:].strip()
+            return self.system.open_app(app)
 
-            return self.system.open_app(
-                data["target"]
-            )
+        # Memory
+        if lower.startswith("remember"):
+            return self.brain.execute(command)
 
-        if intent == "remember_name":
+        if lower == "what is my name":
+            return self.brain.execute(command)
 
-            return self.brain.execute(
-                f"remember my name is {data['name']}"
-            )
-
-        if intent == "recall_name":
-
-            return self.brain.execute(
-                "what is my name"
-            )
-
-        return self.brain.execute(
-            data.get("message", command)
-        )
+        # Everything else goes to AI
+        return self.brain.execute(command)
