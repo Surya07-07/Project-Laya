@@ -26,20 +26,20 @@ def main():
 
     print()
 
-    actions = [
-        "open_app",
-        "remember",
-        "internet",
-        "delete_file"
-    ]
-
-    for action in actions:
-        result = heart.decide(action)
-        print(f"{action:15} -> {result}")
+    # Save information
+    memory.remember("name", "Surya")
+    memory.remember("favorite_color", "Blue")
 
     print()
-    print("✅ System Ready")
-    print("Laya Core v0.2")
+
+    # Recall information
+    print("Name:", memory.recall("name"))
+    print("Favorite Color:", memory.recall("favorite_color"))
+
+    print()
+
+    print("✅ Memory Test Completed")
+    print("Laya Core v0.3")
 
 
 if __name__ == "__main__":
