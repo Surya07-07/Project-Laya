@@ -1,3 +1,4 @@
+from core.intent.analyzer import IntentAnalyzer
 from core.automation.system import SystemAutomation
 
 
@@ -9,23 +10,35 @@ class TaskRouter:
         self.plugin_manager = plugin_manager
         self.system = SystemAutomation()
 
+        self.intent = IntentAnalyzer()
+
     def route(self, command):
 
-        command = command.strip()
+        data = self.intent.analyze(command)
 
-        if command.startswith("calc "):
+        intent = data["intent"]
 
-            expression = command[5:]
-
+        if intent == "calculator":
             return self.plugin_manager.execute(
                 "calculator",
-                expression
+                data["expression"]
             )
 
-        if command.startswith("open "):
+        if intent == "open_app":
+            return self.system.open_app(
+                data["target"]
+            )
 
-            app = command[5:].strip()
+        if intent == "remember_name":
+            return self.brain.execute(
+                f"remember my name is {data['name']}"
+            )
 
-            return self.system.open_app(app)
+        if intent == "recall_name":
+            return self.brain.execute(
+                "what is my name"
+            )
 
-        return self.brain.execute(command)
+        return self.brain.execute(
+            data["message"]
+        )
