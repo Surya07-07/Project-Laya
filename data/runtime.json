@@ -1,0 +1,10 @@
+{
+  "voice": {
+    "enabled": false,
+    "always_listening": false,
+    "wake_word": "Hey Laya"
+  },
+  "face": {
+    "enabled": false
+  }
+}
