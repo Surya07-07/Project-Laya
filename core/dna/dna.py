@@ -12,6 +12,6 @@ class DNA:
         with open(dna_file, "r", encoding="utf-8") as file:
             self.data = json.load(file)
 
-        print(f"🧬 DNA Loaded")
+        print("🧬Laya DNA Loaded")
         print(f"Name    : {self.data['name']}")
         print(f"Version : {self.data['version']}")

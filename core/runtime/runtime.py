@@ -1,19 +1,15 @@
-from app.logger import Logger
 from app.config import Config
-
+from app.logger import Logger
+from core.brain.processor import CommandProcessor
 from core.dna.dna import DNA
+from core.gateway.gateway import Gateway
 from core.guardian.guardian import Guardian
 from core.heart.heart import Heart
 from core.memory.memory import Memory
-from core.gateway.gateway import Gateway
-
-from core.brain.processor import CommandProcessor
-
 from core.plugins.plugin_manager import PluginManager
-from plugins.calculator.plugin import CalculatorPlugin
-
 from core.router.router import TaskRouter
-
+from plugins.calculator.plugin import CalculatorPlugin
+from core.aicore.core import AICore
 
 class LayaRuntime:
 
@@ -30,24 +26,23 @@ class LayaRuntime:
         self.gateway = Gateway()
 
         # Brain
-        self.brain = CommandProcessor(
-            self.memory,
-            self.heart
-        )
+        self.brain = CommandProcessor(self.memory, self.heart)
 
         # Plugin Manager
         self.plugins = PluginManager()
 
-        self.plugins.register(
-            "calculator",
-            CalculatorPlugin()
-        )
+        self.plugins.register("calculator", CalculatorPlugin())
 
         # Router
-        self.router = TaskRouter(
-            self.brain,
-            self.plugins
-        )
+        self.router = TaskRouter(self.brain, self.plugins)
+        
+        self.ai_core = AICore(
+    router=self.router,
+    memory=self.memory,
+    gateway=self.gateway,
+    heart=self.heart,
+    guardian=self.guardian
+)
 
     def start(self):
 
@@ -101,7 +96,7 @@ class LayaRuntime:
 
                 break
 
-            response = self.router.route(user)
+            response = self.ai_core.process(user)
 
             Logger.info(f"LAYA : {response}")
 

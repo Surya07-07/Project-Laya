@@ -4,9 +4,7 @@ class PermissionManager:
 
         while True:
 
-            answer = input(
-                f"\nLaya wants to {action}.\nAllow? (y/n): "
-            )
+            answer = input(f"\nLaya wants to {action}.\nAllow? (y/n): ")
 
             answer = answer.lower().strip()
 

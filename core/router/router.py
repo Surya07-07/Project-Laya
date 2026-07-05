@@ -18,16 +18,11 @@ class TaskRouter:
 
         if task == "automation":
 
-            return self.system.open_app(
-                command[5:].strip()
-            )
+            return self.system.open_app(command[5:].strip())
 
         if task == "calculator":
 
-            return self.plugins.execute(
-                "calculator",
-                command[5:]
-            )
+            return self.plugins.execute("calculator", command[5:])
 
         if task == "memory":
 

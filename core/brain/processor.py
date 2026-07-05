@@ -1,5 +1,5 @@
-from core.memory.service import MemoryService
 from core.ai.ollama_client import OllamaClient
+from core.memory.service import MemoryService
 
 
 class CommandProcessor:
@@ -21,10 +21,7 @@ class CommandProcessor:
 
                 key, value = text.split(" is ", 1)
 
-                return self.memory.remember(
-                    key.strip(),
-                    value.strip()
-                )
+                return self.memory.remember(key.strip(), value.strip())
 
         if lower.startswith("what is my"):
 

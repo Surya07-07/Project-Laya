@@ -20,17 +20,17 @@ class Database:
         self.connection.commit()
 
     def save(self, key, value):
-        self.cursor.execute("""
+        self.cursor.execute(
+            """
         INSERT OR REPLACE INTO memories(key, value)
         VALUES(?, ?)
-        """, (key, value))
+        """,
+            (key, value),
+        )
         self.connection.commit()
 
     def get(self, key):
-        self.cursor.execute(
-            "SELECT value FROM memories WHERE key=?",
-            (key,)
-        )
+        self.cursor.execute("SELECT value FROM memories WHERE key=?", (key,))
 
         row = self.cursor.fetchone()
 

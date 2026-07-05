@@ -1,5 +1,5 @@
-import subprocess
 import platform
+import subprocess
 
 from core.permission.permission import PermissionManager
 
@@ -15,7 +15,7 @@ class SystemAutomation:
             "calculator": "calc.exe",
             "paint": "mspaint.exe",
             "cmd": "cmd.exe",
-            "explorer": "explorer.exe"
+            "explorer": "explorer.exe",
         }
 
     def open_app(self, app_name):

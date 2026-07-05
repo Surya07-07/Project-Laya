@@ -57,7 +57,4 @@ User: Explain AI
 
         except Exception:
 
-            return {
-                "intent": "chat",
-                "message": command
-            }
+            return {"intent": "chat", "message": command}

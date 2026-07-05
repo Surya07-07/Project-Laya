@@ -1,6 +1,7 @@
 import json
 from datetime import datetime
 
+
 class PermissionManager:
     def __init__(self, log_file="logs/permissions.log"):
         self.log_file = log_file
@@ -19,7 +20,7 @@ class PermissionManager:
             "time": str(datetime.now()),
             "action": action,
             "target": target,
-            "decision": decision
+            "decision": decision,
         }
 
         with open(self.log_file, "a") as f:

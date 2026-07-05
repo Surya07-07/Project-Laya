@@ -1,12 +1,7 @@
 class Guardian:
     def __init__(self):
         self.protection = True
-        self.allowed_actions = [
-            "open_app",
-            "read_file",
-            "remember",
-            "speak"
-        ]
+        self.allowed_actions = ["open_app", "read_file", "remember", "speak"]
 
     def load(self):
         print("🛡️ Guardian Loaded")

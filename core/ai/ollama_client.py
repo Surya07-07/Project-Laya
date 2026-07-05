@@ -9,21 +9,12 @@ class OllamaClient:
 
         config = Config()
 
-        self.model = config.get(
-            "ai",
-            "model"
-        )
+        self.model = config.get("ai", "model")
 
     def ask(self, prompt):
 
         response = ollama.chat(
-            model=self.model,
-            messages=[
-                {
-                    "role": "user",
-                    "content": prompt
-                }
-            ]
+            model=self.model, messages=[{"role": "user", "content": prompt}]
         )
 
         return response["message"]["content"].strip()
