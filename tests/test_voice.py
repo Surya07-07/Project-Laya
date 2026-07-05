@@ -1,10 +1,17 @@
-import os
-import sys
-
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
-
 from core.voice.listener import VoiceListener
+from core.voice.recognizer import VoiceRecognizer
+
 
 listener = VoiceListener()
 
-listener.listen()
+recognizer = VoiceRecognizer()
+
+audio = listener.listen()
+
+text = recognizer.recognize(audio)
+
+print()
+
+print("You said:")
+
+print(text)

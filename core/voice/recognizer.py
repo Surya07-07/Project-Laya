@@ -1,7 +1,27 @@
+from faster_whisper import WhisperModel
+
+
 class VoiceRecognizer:
 
-    def recognize(self, audio):
+    def __init__(self):
 
-        print("Voice recognition coming in next milestone...")
+        print("Loading Whisper model...")
 
-        return None
+        self.model = WhisperModel(
+            "tiny",
+            device="cpu",
+            compute_type="int8"
+        )
+
+        print("Whisper Ready.")
+
+    def recognize(self, audio_file):
+
+        segments, info = self.model.transcribe(audio_file)
+
+        text = ""
+
+        for segment in segments:
+            text += segment.text + " "
+
+        return text.strip()

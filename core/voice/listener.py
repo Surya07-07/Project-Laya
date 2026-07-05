@@ -1,5 +1,5 @@
-import numpy as np
 import sounddevice as sd
+import soundfile as sf
 
 
 class VoiceListener:
@@ -11,17 +11,22 @@ class VoiceListener:
 
     def listen(self):
 
-        print("🎤 Listening...")
+        print("Listening...")
 
         audio = sd.rec(
-            int(self.duration * self.sample_rate),
+            int(self.sample_rate * self.duration),
             samplerate=self.sample_rate,
-            channels=1,
-            dtype=np.int16,
+            channels=1
         )
 
         sd.wait()
 
-        print("✅ Recording finished.")
+        sf.write(
+            "temp.wav",
+            audio,
+            self.sample_rate
+        )
 
-        return audio
+        print("Saved temp.wav")
+
+        return "temp.wav"
