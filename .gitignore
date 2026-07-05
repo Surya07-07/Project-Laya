@@ -1,19 +1,37 @@
+# Python
 __pycache__/
-*.pyc
-*.pyo
+*.py[cod]
+*$py.class
 
-.venv/
+# Virtual Environments
 venv/
+.venv/
 
+# Pytest
 .pytest_cache/
 
-.idea/
+# IDE
 .vscode/
+.idea/
 
+# Logs
 logs/
+*.log
 
-data/memory.db
+# Database
+*.db
+*.sqlite3
 
+# Environment
+.env
+
+# AI Models
 models/
 
-.env
+# Build
+build/
+dist/
+
+# OS Files
+.DS_Store
+Thumbs.db
