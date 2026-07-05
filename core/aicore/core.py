@@ -1,4 +1,5 @@
 from core.ai.service import AIService
+from core.intent.router import IntentRouter
 
 
 class AICore:
@@ -19,14 +20,19 @@ class AICore:
         self.heart = heart
         self.guardian = guardian
         self.skills = skill_manager
+
+        self.intent = IntentRouter()
         self.ai = AIService()
 
     def process(self, command):
 
-        response = self.skills.execute(command)
+        intent = self.intent.detect(command)
 
-        if response is not None:
-            return response
+        if intent == "skill":
+            response = self.skills.execute(command)
+
+            if response is not None:
+                return response
 
         response = self.router.route(command)
 
