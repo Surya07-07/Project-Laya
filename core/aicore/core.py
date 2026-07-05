@@ -1,3 +1,6 @@
+from core.ai.service import AIService
+
+
 class AICore:
 
     def __init__(
@@ -16,6 +19,7 @@ class AICore:
         self.heart = heart
         self.guardian = guardian
         self.skills = skill_manager
+        self.ai = AIService()
 
     def process(self, command):
 
@@ -24,4 +28,9 @@ class AICore:
         if response is not None:
             return response
 
-        return self.router.route(command)
+        response = self.router.route(command)
+
+        if response is not None:
+            return response
+
+        return self.ai.ask(command)
