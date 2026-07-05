@@ -6,7 +6,8 @@ class AICore:
         memory,
         gateway,
         heart,
-        guardian
+        guardian,
+        skill_manager
     ):
 
         self.router = router
@@ -14,12 +15,13 @@ class AICore:
         self.gateway = gateway
         self.heart = heart
         self.guardian = guardian
+        self.skills = skill_manager
 
     def process(self, command):
 
-        command = command.strip()
+        response = self.skills.execute(command)
 
-        if not command:
-            return "Please say something."
+        if response is not None:
+            return response
 
         return self.router.route(command)
