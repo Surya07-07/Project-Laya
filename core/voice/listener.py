@@ -1,32 +1,32 @@
-import sounddevice as sd
-import soundfile as sf
+import speech_recognition as sr
 
 
 class VoiceListener:
 
     def __init__(self):
-
-        self.sample_rate = 16000
-        self.duration = 5
+        self.recognizer = sr.Recognizer()
 
     def listen(self):
 
-        print("Listening...")
+        with sr.Microphone() as source:
 
-        audio = sd.rec(
-            int(self.sample_rate * self.duration),
-            samplerate=self.sample_rate,
-            channels=1
-        )
+            print("🎤 Listening...")
 
-        sd.wait()
+            self.recognizer.adjust_for_ambient_noise(
+                source,
+                duration=1
+            )
 
-        sf.write(
-            "temp.wav",
-            audio,
-            self.sample_rate
-        )
+            audio = self.recognizer.listen(source)
 
-        print("Saved temp.wav")
+        try:
 
-        return "temp.wav"
+            text = self.recognizer.recognize_google(audio)
+
+            print("You said:", text)
+
+            return text
+
+        except Exception:
+
+            return None
