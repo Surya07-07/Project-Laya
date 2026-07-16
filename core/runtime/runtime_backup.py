@@ -12,6 +12,7 @@ from plugins.calculator.plugin import CalculatorPlugin
 from core.aicore.core import AICore
 from core.skills.manager import SkillManager
 from skills.calculator.skill import CalculatorSkill
+from core.conversation.history import ConversationHistory
 
 class LayaRuntime:
 
@@ -27,22 +28,26 @@ class LayaRuntime:
         self.memory = Memory()
         self.gateway = Gateway()
 
-        # Brain
-        self.brain = CommandProcessor(self.memory, self.heart)
-
         # Plugin Manager
         self.plugins = PluginManager()
+        self.plugins.register(
+            "calculator",
+            CalculatorPlugin()
+        )
 
-        self.plugins.register("calculator", CalculatorPlugin())
-
-        # Router
-        self.router = TaskRouter(self.brain, self.plugins)
-        
+        # Skill Manager
         self.skill_manager = SkillManager()
         self.skill_manager.register(
             CalculatorSkill()
         )
 
+        # Router
+        self.router = TaskRouter(
+            None,
+            self.plugins
+        )
+
+        # AI Core
         self.ai_core = AICore(
             router=self.router,
             memory=self.memory,
@@ -51,6 +56,19 @@ class LayaRuntime:
             guardian=self.guardian,
             skill_manager=self.skill_manager
         )
+
+        # Brain
+        self.brain = CommandProcessor(
+            self.memory,
+            self.heart,
+            self.ai_core
+        )
+
+        # Connect router to brain
+        self.router.brain = self.brain
+
+        # Conversation History
+        self.history = ConversationHistory()
 
     def start(self):
 
@@ -104,8 +122,20 @@ class LayaRuntime:
 
                 break
 
-            response = self.ai_core.process(user)
+            self.gateway.history.add(
+    "User",
+    user
+)
 
-            Logger.info(f"LAYA : {response}")
+            self.memory.learn(user)
 
-            print("Laya :", response)
+        response = self.ai_core.process(user)
+
+        self.gateway.history.add(
+    "Laya",
+    response
+)
+
+        Logger.info(f"LAYA : {response}")
+
+        print("Laya :", response)
