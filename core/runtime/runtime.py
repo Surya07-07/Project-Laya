@@ -13,6 +13,7 @@ from core.aicore.core import AICore
 from core.skills.manager import SkillManager
 from skills.calculator.skill import CalculatorSkill
 
+
 class LayaRuntime:
 
     def __init__(self):
@@ -27,22 +28,26 @@ class LayaRuntime:
         self.memory = Memory()
         self.gateway = Gateway()
 
-        # Brain
-        self.brain = CommandProcessor(self.memory, self.heart)
-
         # Plugin Manager
         self.plugins = PluginManager()
+        self.plugins.register(
+            "calculator",
+            CalculatorPlugin()
+        )
 
-        self.plugins.register("calculator", CalculatorPlugin())
-
-        # Router
-        self.router = TaskRouter(self.brain, self.plugins)
-        
+        # Skill Manager
         self.skill_manager = SkillManager()
         self.skill_manager.register(
             CalculatorSkill()
         )
 
+        # Router
+        self.router = TaskRouter(
+            None,
+            self.plugins
+        )
+
+        # AI Core
         self.ai_core = AICore(
             router=self.router,
             memory=self.memory,
@@ -51,6 +56,16 @@ class LayaRuntime:
             guardian=self.guardian,
             skill_manager=self.skill_manager
         )
+
+        # Brain
+        self.brain = CommandProcessor(
+            self.memory,
+            self.heart,
+            self.ai_core
+        )
+
+        # Connect router to brain
+        self.router.brain = self.brain
 
     def start(self):
 

@@ -1,17 +1,19 @@
-from core.ai.ollama_client import OllamaClient
 from core.memory.service import MemoryService
 
 
 class CommandProcessor:
 
-    def __init__(self, memory, heart):
+    def __init__(self, memory, heart, ai_core):
 
         self.memory = MemoryService()
-        self.ai = OllamaClient()
+        self.heart = heart
+        self.ai = ai_core
 
     def execute(self, command):
 
-        lower = command.lower()
+        lower = command.lower().strip()
+
+        # ---------- Memory ----------
 
         if lower.startswith("remember my"):
 
@@ -21,7 +23,10 @@ class CommandProcessor:
 
                 key, value = text.split(" is ", 1)
 
-                return self.memory.remember(key.strip(), value.strip())
+                return self.memory.remember(
+                    key.strip(),
+                    value.strip()
+                )
 
         if lower.startswith("what is my"):
 
@@ -29,4 +34,6 @@ class CommandProcessor:
 
             return self.memory.recall(key)
 
-        return self.ai.ask(command)
+        # ---------- AI ----------
+
+        return self.ai.process(command)

@@ -28,15 +28,24 @@ class AICore:
 
         intent = self.intent.detect(command)
 
+        # ---------- Skills ----------
+
         if intent == "skill":
-            response = self.skills.execute(command)
 
-            if response is not None:
-                return response
+            result = self.skills.execute(command)
 
-        response = self.router.route(command)
+            if result is not None:
 
-        if response is not None:
-            return response
+                return result
+
+        # ---------- Router ----------
+
+        result = self.router.route(command)
+
+        if result is not None:
+
+            return result
+
+        # ---------- AI ----------
 
         return self.ai.ask(command)
