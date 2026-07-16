@@ -1,4 +1,5 @@
 from core.ai.service import AIService
+from core.ai.prompt_builder import PromptBuilder
 from core.intent.router import IntentRouter
 
 
@@ -23,6 +24,7 @@ class AICore:
 
         self.intent = IntentRouter()
         self.ai = AIService()
+        self.prompt_builder = PromptBuilder()
 
     def process(self, command):
 
@@ -35,7 +37,6 @@ class AICore:
             result = self.skills.execute(command)
 
             if result is not None:
-
                 return result
 
         # ---------- Router ----------
@@ -43,9 +44,13 @@ class AICore:
         result = self.router.route(command)
 
         if result is not None:
-
             return result
 
         # ---------- AI ----------
 
-        return self.ai.ask(command)
+        prompt = self.prompt_builder.build(
+            self.gateway.history,
+            command
+        )
+
+        return self.ai.ask(prompt)

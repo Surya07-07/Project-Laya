@@ -1,6 +1,12 @@
+from core.conversation.history import ConversationHistory
+
+
 class Gateway:
+
     def __init__(self):
-        self.internet_enabled = False
+
+        self.history = ConversationHistory()
 
     def load(self):
+
         print("🌐 Gateway Loaded")

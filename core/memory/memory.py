@@ -2,6 +2,7 @@ from core.memory.database import Database
 from core.memory.ranker import MemoryRanker
 from core.memory.types import MemoryType
 from core.memory.semantic import SemanticMemory
+from core.memory.extractor import MemoryExtractor
 
 
 class Memory:
@@ -10,6 +11,7 @@ class Memory:
         self.database = Database()
         self.ranker = MemoryRanker()
         self.semantic = SemanticMemory()
+        self.extractor = MemoryExtractor()
 
     def load(self):
         self.database.initialize()
@@ -40,6 +42,17 @@ class Memory:
         )
 
         print(f"💾 Saved ({memory_type.value}): {key}")
+
+    def learn(self, sentence):
+
+        result = self.extractor.extract(sentence)
+
+        if result is None:
+            return
+
+        key, value = result
+
+        self.remember(key, value)
 
     def recall(self, question):
 

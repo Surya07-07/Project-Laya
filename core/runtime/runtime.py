@@ -122,12 +122,20 @@ class LayaRuntime:
 
                 break
 
-            self.history.add("User", user)
+            self.gateway.history.add(
+    "User",
+    user
+)
 
-            response = self.ai_core.process(user)
+            self.memory.learn(user)
 
-            self.history.add("Laya", response)
+        response = self.ai_core.process(user)
 
-            Logger.info(f"LAYA : {response}")
+        self.gateway.history.add(
+    "Laya",
+    response
+)
 
-            print("Laya :", response)
+        Logger.info(f"LAYA : {response}")
+
+        print("Laya :", response)
