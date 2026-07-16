@@ -12,7 +12,7 @@ from plugins.calculator.plugin import CalculatorPlugin
 from core.aicore.core import AICore
 from core.skills.manager import SkillManager
 from skills.calculator.skill import CalculatorSkill
-
+from core.conversation.history import ConversationHistory
 
 class LayaRuntime:
 
@@ -67,6 +67,9 @@ class LayaRuntime:
         # Connect router to brain
         self.router.brain = self.brain
 
+        # Conversation History
+        self.history = ConversationHistory()
+
     def start(self):
 
         Logger.info("Starting Laya Runtime")
@@ -119,7 +122,11 @@ class LayaRuntime:
 
                 break
 
+            self.history.add("User", user)
+
             response = self.ai_core.process(user)
+
+            self.history.add("Laya", response)
 
             Logger.info(f"LAYA : {response}")
 

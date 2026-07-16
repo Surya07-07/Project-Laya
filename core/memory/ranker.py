@@ -5,17 +5,22 @@ class MemoryRanker:
 
     def classify(self, text):
 
-        text = text.lower()
+        text = text.lower().strip()
 
         permanent = [
+            "name",
             "my name",
-            "i am",
-            "i'm",
+            "city",
+            "my city",
+            "birthday",
             "my birthday",
             "favorite",
             "prefer",
-            "my city",
-            "my college"
+            "language",
+            "college",
+            "university",
+            "home",
+            "hometown"
         ]
 
         important = [
@@ -23,8 +28,8 @@ class MemoryRanker:
             "meeting",
             "assignment",
             "deadline",
-            "tomorrow",
-            "today"
+            "today",
+            "tomorrow"
         ]
 
         temporary = [
@@ -45,4 +50,5 @@ class MemoryRanker:
             if word in text:
                 return MemoryType.TEMPORARY
 
-        return MemoryType.IGNORE
+        # Store unknown memories as permanent during development
+        return MemoryType.PERMANENT

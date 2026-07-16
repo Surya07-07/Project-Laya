@@ -5,7 +5,7 @@ class CommandProcessor:
 
     def __init__(self, memory, heart, ai_core):
 
-        self.memory = MemoryService()
+        self.memory = memory
         self.heart = heart
         self.ai = ai_core
 

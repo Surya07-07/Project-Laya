@@ -17,15 +17,12 @@ class TaskRouter:
         task = self.decision.decide(command)
 
         if task == "automation":
-
             return self.system.open_app(command[5:].strip())
 
         if task == "calculator":
-
             return self.plugins.execute("calculator", command[5:])
 
-        if task == "memory":
+        # Do NOT call brain.execute() here.
+        # Returning None lets AICore fall back to AI.
 
-            return self.brain.execute(command)
-
-        return self.brain.execute(command)
+        return None
