@@ -4,7 +4,6 @@ from core.cognition.intent import IntentDetector
 from core.agent.router import ActionRouter
 from core.agent.goal_manager import GoalManager
 from core.agent.verifier import PlanVerifier
-from core.agent.retry_engine import RetryEngine
 
 
 
@@ -24,8 +23,6 @@ class AgentController:
         self.goal = GoalManager()
 
         self.verifier = PlanVerifier()
-
-        self.retry = RetryEngine()
 
 
 
@@ -58,6 +55,9 @@ class AgentController:
 
 
 
+        print("\n🧩 Creating goal...")
+
+
         goal = self.goal.create_goal(
 
             request,
@@ -82,7 +82,7 @@ class AgentController:
 
 
 
-        print("\n⚙️ Executing goal...")
+        print("\n⚙️ Executing...")
 
 
         while True:
@@ -97,9 +97,7 @@ class AgentController:
 
 
 
-            retry_result = self.retry.run(
-
-                self.executor.execute,
+            result = self.executor.execute(
 
                 step["tool"],
 
@@ -108,18 +106,14 @@ class AgentController:
             )
 
 
-
             verification = self.verifier.verify(
-
-                retry_result["result"]
-
+                result
             )
-
 
 
             results.append({
 
-                "retry": retry_result,
+                "result": result,
 
                 "verification": verification
 
@@ -127,16 +121,18 @@ class AgentController:
 
 
 
-            if verification["verified"]:
+            if not verification["verified"]:
+
 
                 print(
-                    "✅ Task completed"
+                    "🔄 Attempt failed"
                 )
+
 
             else:
 
                 print(
-                    "❌ Task failed after retries"
+                    "✅ Step verified"
                 )
 
 
