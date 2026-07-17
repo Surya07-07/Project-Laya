@@ -3,7 +3,6 @@ from core.agent.validator import SafetyValidator
 from core.agent.executor import Executor
 from core.agent.learning import LearningMemory
 from core.cognition.intent import IntentDetector
-from core.agent.router import ActionRouter
 
 
 
@@ -21,8 +20,6 @@ class AgentController:
         self.memory = LearningMemory()
 
         self.intent = IntentDetector()
-
-        self.router = ActionRouter()
 
 
 
@@ -43,28 +40,12 @@ class AgentController:
         )
 
 
-        tool = self.router.route(
-            intent_result["intent"]
-        )
-
-
-        print(
-            "Tool:",
-            tool
-        )
-
-
-
         print("\n🧩 Creating plan...")
 
 
         goal = self.planner.create_plan(
             request
         )
-
-
-
-        print("\n🛡️ Checking safety...")
 
 
         security = self.validator.validate(
@@ -76,28 +57,21 @@ class AgentController:
 
             return {
 
-                "status": "blocked",
+                "status":"blocked",
 
-                "security": security
+                "security":security
 
             }
 
 
 
-        print("\n⚙️ Executing task...")
-
-
         result = self.executor.execute(
 
-            tool,
+            "create_folder",
 
-            request
+            "Laya_Test"
 
         )
-
-
-
-        print("\n🧬 Saving memory...")
 
 
         memory = self.memory.save_success(
@@ -111,19 +85,16 @@ class AgentController:
         )
 
 
-
         return {
 
-            "intent": intent_result,
+            "intent":intent_result,
 
-            "tool": tool,
+            "plan":goal.show(),
 
-            "plan": goal.show(),
+            "security":security,
 
-            "security": security,
+            "execution":result,
 
-            "execution": result,
-
-            "memory": memory
+            "memory":memory
 
         }

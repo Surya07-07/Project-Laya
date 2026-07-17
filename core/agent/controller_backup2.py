@@ -2,8 +2,6 @@ from core.agent.planner import AIPlanner
 from core.agent.validator import SafetyValidator
 from core.agent.executor import Executor
 from core.agent.learning import LearningMemory
-from core.cognition.intent import IntentDetector
-from core.agent.router import ActionRouter
 
 
 
@@ -20,48 +18,17 @@ class AgentController:
 
         self.memory = LearningMemory()
 
-        self.intent = IntentDetector()
-
-        self.router = ActionRouter()
-
 
 
     def process(self, request):
 
 
-        print("\n🧠 Detecting intent...")
-
-
-        intent_result = self.intent.detect(
-            request
-        )
-
-
-        print(
-            "Intent:",
-            intent_result
-        )
-
-
-        tool = self.router.route(
-            intent_result["intent"]
-        )
-
-
-        print(
-            "Tool:",
-            tool
-        )
-
-
-
-        print("\n🧩 Creating plan...")
+        print("\n🧠 Creating plan...")
 
 
         goal = self.planner.create_plan(
             request
         )
-
 
 
         print("\n🛡️ Checking safety...")
@@ -89,9 +56,9 @@ class AgentController:
 
         result = self.executor.execute(
 
-            tool,
+            "create_folder",
 
-            request
+            "Laya_Test"
 
         )
 
@@ -104,19 +71,14 @@ class AgentController:
 
             request,
 
-            intent_result["intent"],
+            "create_folder",
 
             result
 
         )
 
 
-
         return {
-
-            "intent": intent_result,
-
-            "tool": tool,
 
             "plan": goal.show(),
 
