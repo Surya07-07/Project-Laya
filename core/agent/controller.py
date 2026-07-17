@@ -1,5 +1,7 @@
 from core.agent.planner import AIPlanner
 from core.agent.validator import SafetyValidator
+from core.agent.executor import Executor
+
 
 
 class AgentController:
@@ -9,6 +11,8 @@ class AgentController:
 
         self.planner = AIPlanner()
         self.validator = SafetyValidator()
+        self.executor = Executor()
+
 
 
     def process(self, request):
@@ -22,12 +26,30 @@ class AgentController:
 
         print("\n🛡️ Checking safety...")
 
-        result = self.validator.validate(
+        security = self.validator.validate(
             goal
+        )
+
+
+        if not security["allowed"]:
+
+            return {
+                "status": "blocked",
+                "security": security
+            }
+
+
+        print("\n⚙️ Executing task...")
+
+
+        result = self.executor.execute(
+            "create_folder",
+            "Laya_Test"
         )
 
 
         return {
             "plan": goal.show(),
-            "security": result
+            "security": security,
+            "execution": result
         }
