@@ -1,6 +1,7 @@
 from core.device.system_info import SystemInfo
 from core.device.storage import StorageManager
 from core.device.network import NetworkManager
+from core.device.app_database import AppDatabase
 
 
 class DeviceManager:
@@ -13,6 +14,18 @@ class DeviceManager:
 
         self.network = NetworkManager()
 
+        self.apps = AppDatabase()
+
+    def initialize(self):
+
+        print("🔍 Scanning Installed Applications...")
+
+        database = self.apps.scan()
+
+        self.apps.save()
+
+        print(f"✅ Indexed {len(database)} applications")
+
     def summary(self):
 
         return {
@@ -21,6 +34,8 @@ class DeviceManager:
 
             "network": self.network.info(),
 
-            "drives": self.storage.drives()
+            "drives": self.storage.drives(),
+
+            "applications": len(self.apps.load())
 
         }
