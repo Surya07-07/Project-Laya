@@ -1,15 +1,13 @@
-from core.agent.controller import AgentController
+from core.agent.agent import Agent
 
 
-agent = AgentController()
+class DummyAI:
+
+    def process(self, command):
+
+        return "AI Response -> " + command
 
 
-result = agent.process(
-    "Create a folder for Laya"
-)
+agent = Agent(DummyAI())
 
-
-print("\n🚀 Laya Agent Result\n")
-
-
-print(result)
+print(agent.process("Hello Laya"))
