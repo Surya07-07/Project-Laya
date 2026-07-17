@@ -13,6 +13,7 @@ class Database:
 
         self.cursor = self.connection.cursor()
 
+
     def initialize(self):
 
         self.cursor.execute("""
@@ -32,82 +33,148 @@ class Database:
 
             last_used TEXT,
 
-            expires_at TEXT
+            expires_at TEXT,
+
+            encrypted INTEGER DEFAULT 0
         )
         """)
 
         self.connection.commit()
 
+
     def save(
         self,
         key,
         value,
-        memory_type="permanent",
-        importance=5,
-        expires_at=None
+        memory_type,
+        importance
     ):
+
+        existing = self.get(key)
 
         now = datetime.now().isoformat()
 
-        self.cursor.execute("""
-        INSERT OR REPLACE INTO memories
-        (
-            key,
-            value,
-            memory_type,
-            importance,
-            created_at,
-            last_used,
-            expires_at
+
+        if existing is not None:
+
+            self.cursor.execute(
+                """
+                UPDATE memories
+                SET value=?,
+                    memory_type=?,
+                    importance=?,
+                    last_used=?
+                WHERE key=?
+                """,
+                (
+                    value,
+                    memory_type,
+                    importance,
+                    now,
+                    key
+                )
+            )
+
+            self.connection.commit()
+            return
+
+
+        self.cursor.execute(
+            """
+            INSERT INTO memories
+            (
+                key,
+                value,
+                memory_type,
+                importance,
+                created_at,
+                last_used
+            )
+
+            VALUES (?, ?, ?, ?, ?, ?)
+            """,
+            (
+                key,
+                value,
+                memory_type,
+                importance,
+                now,
+                now
+            )
         )
-        VALUES
-        (?,?,?,?,?,?,?)
-        """,
-        (
-            key,
-            value,
-            memory_type,
-            importance,
-            now,
-            now,
-            expires_at
-        ))
 
         self.connection.commit()
+
+
 
     def get(self, key):
 
         self.cursor.execute(
-            "SELECT value FROM memories WHERE key=?",
+            """
+            SELECT value
+            FROM memories
+            WHERE key=?
+            """,
             (key,)
         )
 
         row = self.cursor.fetchone()
 
         if row:
-
-            self.cursor.execute(
-                """
-                UPDATE memories
-                SET last_used=?
-                WHERE key=?
-                """,
-                (
-                    datetime.now().isoformat(),
-                    key
-                )
-            )
-
-            self.connection.commit()
-
             return row[0]
 
         return None
 
-    def all(self):
+
+
+    def get_all(self):
 
         self.cursor.execute(
-            "SELECT * FROM memories"
+            """
+            SELECT
+            key,
+            value,
+            memory_type,
+            importance,
+            created_at,
+            last_used
+
+            FROM memories
+
+            ORDER BY importance DESC
+            """
         )
 
         return self.cursor.fetchall()
+
+
+
+    def delete(self, key):
+
+        self.cursor.execute(
+            """
+            DELETE FROM memories
+            WHERE key=?
+            """,
+            (key,)
+        )
+
+        self.connection.commit()
+
+
+
+    def cleanup_expired(self):
+
+        now = datetime.now().isoformat()
+
+        self.cursor.execute(
+            """
+            DELETE FROM memories
+
+            WHERE expires_at IS NOT NULL
+            AND expires_at < ?
+            """,
+            (now,)
+        )
+
+        self.connection.commit()
