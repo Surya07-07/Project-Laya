@@ -1,32 +1,17 @@
-import speech_recognition as sr
-
-
-class VoiceListener:
+class Listener:
 
     def __init__(self):
-        self.recognizer = sr.Recognizer()
 
-    def listen(self):
+        self.active = False
 
-        with sr.Microphone() as source:
+    def start(self):
 
-            print("🎤 Listening...")
+        self.active = True
 
-            self.recognizer.adjust_for_ambient_noise(
-                source,
-                duration=1
-            )
+        print("👂 Listener active")
 
-            audio = self.recognizer.listen(source)
+    def stop(self):
 
-        try:
+        self.active = False
 
-            text = self.recognizer.recognize_google(audio)
-
-            print("You said:", text)
-
-            return text
-
-        except Exception:
-
-            return None
+        print("👂 Listener stopped")

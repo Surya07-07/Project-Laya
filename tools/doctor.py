@@ -1,68 +1,136 @@
+import json
 import os
 import sqlite3
+import urllib.request
 
-print("=" * 50)
-print("PROJECT LAYA DOCTOR")
-print("=" * 50)
+print("=" * 60)
+print("              PROJECT LAYA DOCTOR")
+print("=" * 60)
 
-print()
+passed = 0
+failed = 0
 
-# -----------------------
+
+def check(name, condition):
+
+    global passed, failed
+
+    if condition:
+        print(f"✓ {name}")
+        passed += 1
+    else:
+        print(f"✗ {name}")
+        failed += 1
+
+
+# ---------------------------------
 # Config
-# -----------------------
+# ---------------------------------
 
-if os.path.exists("data/config.json"):
-    print("✓ Config Found")
-else:
-    print("✗ Missing data/config.json")
+config_exists = os.path.exists("data/config.json")
+check("Config File", config_exists)
 
-# -----------------------
+if config_exists:
+
+    try:
+
+        with open("data/config.json", "r", encoding="utf-8") as f:
+            json.load(f)
+
+        check("Config JSON", True)
+
+    except Exception:
+
+        check("Config JSON", False)
+
+
+# ---------------------------------
 # Memory
-# -----------------------
+# ---------------------------------
 
-if os.path.exists("data/memory.db"):
+db_exists = os.path.exists("data/memory.db")
+check("Memory Database", db_exists)
 
-    print("✓ Memory Database Found")
+if db_exists:
 
     try:
 
         sqlite3.connect("data/memory.db").close()
+        check("SQLite", True)
 
-        print("✓ Memory Database OK")
+    except Exception:
 
-    except Exception as e:
+        check("SQLite", False)
 
-        print("✗ Memory Error")
-        print(e)
 
-else:
+# ---------------------------------
+# Directories
+# ---------------------------------
 
-    print("✗ Memory Database Missing")
+folders = [
+    "logs",
+    "data",
+    "settings",
+    "core",
+    "plugins",
+    "skills",
+    "tests"
+]
 
-# -----------------------
-# Logs
-# -----------------------
+for folder in folders:
 
-if os.path.exists("logs"):
+    check(folder, os.path.exists(folder))
 
-    print("✓ Logs Folder")
 
-else:
+# ---------------------------------
+# Ollama
+# ---------------------------------
 
-    print("✗ Logs Folder Missing")
+try:
 
-# -----------------------
-# Settings
-# -----------------------
+    urllib.request.urlopen(
+        "http://127.0.0.1:11434/api/version",
+        timeout=2
+    )
 
-if os.path.exists("settings"):
+    check("Ollama Server", True)
 
-    print("✓ Settings Folder")
+except Exception:
 
-else:
+    check("Ollama Server", False)
 
-    print("✗ Settings Folder Missing")
+
+# ---------------------------------
+# Models
+# ---------------------------------
+
+if config_exists:
+
+    try:
+
+        with open("data/config.json", "r") as f:
+
+            cfg = json.load(f)
+
+        model = cfg["ai"]["model"]
+
+        print()
+        print("Configured Model :", model)
+
+    except Exception:
+
+        print("Unable to read configured model.")
 
 print()
+print("=" * 60)
+print("SUMMARY")
+print("=" * 60)
 
-print("Doctor Finished.")
+print(f"Passed : {passed}")
+print(f"Failed : {failed}")
+
+if failed == 0:
+    print("\n🎉 Laya is healthy.")
+else:
+    print("\n⚠ Some checks failed.")
+
