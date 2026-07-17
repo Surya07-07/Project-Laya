@@ -4,6 +4,7 @@ from core.agent.executor import Executor
 from core.agent.learning import LearningMemory
 from core.cognition.intent import IntentDetector
 from core.agent.router import ActionRouter
+from core.security.permission import PermissionManager
 
 
 
@@ -23,6 +24,8 @@ class AgentController:
         self.intent = IntentDetector()
 
         self.router = ActionRouter()
+
+        self.permission = PermissionManager()
 
 
 
@@ -76,11 +79,32 @@ class AgentController:
 
             return {
 
-                "status": "blocked",
+                "status":"blocked",
 
-                "security": security
+                "security":security
 
             }
+
+
+
+        if self.permission.requires_permission(
+            request
+        ):
+
+
+            approved = self.permission.ask_permission(
+                request
+            )
+
+
+            if not approved:
+
+                return {
+
+                    "status":
+                    "permission_denied"
+
+                }
 
 
 
@@ -97,9 +121,6 @@ class AgentController:
 
 
 
-        print("\n🧬 Saving memory...")
-
-
         memory = self.memory.save_success(
 
             request,
@@ -111,19 +132,14 @@ class AgentController:
         )
 
 
-
         return {
 
-            "intent": intent_result,
+            "intent":intent_result,
 
-            "tool": tool,
+            "tool":tool,
 
-            "plan": goal.show(),
+            "execution":result,
 
-            "security": security,
-
-            "execution": result,
-
-            "memory": memory
+            "memory":memory
 
         }
