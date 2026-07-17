@@ -1,11 +1,15 @@
+import time
+
 from core.voice.state import VoiceState
 from core.voice.listener import Listener
 from core.voice.microphone import Microphone
 from core.voice.speaker import Speaker
-from core.voice.wake_word import WakeWord
+from core.voice.wake_word import WakeWordDetector
 
 
 class VoiceManager:
+
+    SESSION_TIMEOUT = 15
 
     def __init__(self):
 
@@ -17,42 +21,148 @@ class VoiceManager:
 
         self.speaker = Speaker()
 
-        self.wake = WakeWord()
+        self.wake = WakeWordDetector()
+
+        self.session_active = False
+
+        self.last_activity = 0
 
     def start(self):
 
-        self.microphone.start()
+        print("🎤 Starting Voice Manager...")
 
-        self.listener.start()
+        try:
+            self.microphone.start()
+        except Exception:
+            pass
+
+        try:
+            self.listener.start()
+        except Exception:
+            pass
 
         self.state = VoiceState.SLEEPING
+        self.session_active = False
 
-        print("🎤 Voice Manager Ready")
+        print("✅ Voice Manager Ready")
 
     def stop(self):
 
-        self.listener.stop()
+        print("🛑 Stopping Voice Manager...")
 
-        self.microphone.stop()
+        try:
+            self.listener.stop()
+        except Exception:
+            pass
 
+        try:
+            self.microphone.stop()
+        except Exception:
+            pass
+
+        self.session_active = False
         self.state = VoiceState.STOPPED
+
+        print("✅ Voice Manager Stopped")
+
+    def wait_for_wake_word(self):
+
+        print("🎤 Waiting for wake word...")
+
+        while True:
+
+            if self.wake.detected():
+
+                self.activate()
+
+                return True
 
     def activate(self):
 
         self.state = VoiceState.LISTENING
 
+        self.session_active = True
+
+        self.last_activity = time.time()
+
         print("👂 Listening...")
 
-    def think(self):
+    def keep_alive(self):
+
+        self.last_activity = time.time()
+
+    def session_alive(self):
+
+        if not self.session_active:
+
+            return False
+
+        return (
+            time.time() - self.last_activity
+        ) < self.SESSION_TIMEOUT
+
+    def sleep(self):
+
+        self.session_active = False
+
+        self.state = VoiceState.SLEEPING
+
+        print("😴 Session Ended")
+
+    def listening(self):
+
+        self.state = VoiceState.LISTENING
+
+        self.keep_alive()
+
+        print("👂 Listening...")
+
+    def thinking(self):
 
         self.state = VoiceState.THINKING
 
+        self.keep_alive()
+
         print("🧠 Thinking...")
 
-    def speak(self, text):
+    def speaking(self, text):
 
         self.state = VoiceState.SPEAKING
 
-        self.speaker.speak(text)
+        self.keep_alive()
 
-        self.state = VoiceState.SLEEPING
+        print("🔊 Speaking...")
+
+        try:
+
+            self.speaker.speak(text)
+
+        except Exception as e:
+
+            print("Speaker Error:", e)
+
+        if self.session_alive():
+
+            self.listening()
+
+        else:
+
+            self.sleep()
+
+    def run(self):
+
+        self.start()
+
+        while True:
+
+            if not self.session_active:
+
+                self.wait_for_wake_word()
+
+            else:
+
+                if not self.session_alive():
+
+                    self.sleep()
+
+                time.sleep(0.2)

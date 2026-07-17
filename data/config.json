@@ -8,8 +8,8 @@
     "model": "llama3.2:3b"
   },
   "voice": {
-    "enabled": false,
-    "wake_word": "Hey Laya"
+    "enabled": true,
+    "wake_word": "Laya"
   },
   "security": {
     "privacy_first": true,

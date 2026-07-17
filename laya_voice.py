@@ -1,6 +1,7 @@
 from core.voice.wake_word import WakeWordDetector
 from core.voice.speech_recognizer import SpeechRecognizer
 from core.voice.agent_bridge import VoiceAgentBridge
+from core.voice.voice_response import LayaVoice
 
 
 
@@ -10,6 +11,8 @@ speech = SpeechRecognizer()
 
 brain = VoiceAgentBridge()
 
+voice = LayaVoice()
+
 
 
 print("""
@@ -17,7 +20,7 @@ print("""
        PROJECT IGRIS
            LAYA
 
-       WAKE MODE
+      FULL VOICE MODE
 =========================
 """)
 
@@ -28,8 +31,8 @@ while True:
     if wake.detected():
 
 
-        print(
-            "\n🎤 Listening Command..."
+        voice.speak(
+            "Yes, I am listening"
         )
 
 
@@ -43,7 +46,6 @@ while True:
         )
 
 
-
         if command:
 
 
@@ -52,8 +54,13 @@ while True:
             )
 
 
-            print(
-                "\nLaya:"
+            message = str(
+                result
+            )
+
+
+            voice.speak(
+                "Task completed"
             )
 
 

@@ -21,16 +21,19 @@ from core.aicore.core import AICore
 
 from core.conversation.history import ConversationHistory
 from core.system.startup import StartupManager
+
+
+# Voice imports
 from core.voice.wakeword import WakeWord
+from core.voice.microphone import Microphone
+from core.voice.speech.whisper import SpeechRecognizer
+from core.voice.voice_response import LayaVoice
 
 
 class LayaRuntime:
 
-    def __init__(self):
 
-        # ------------------------------
-        # Dependency Container
-        # ------------------------------
+    def __init__(self):
 
         try:
 
@@ -44,6 +47,7 @@ class LayaRuntime:
             self.gateway = self.container.gateway
             self.emotion = self.container.emotion
 
+
         except Exception:
 
             self.config = Config()
@@ -52,11 +56,9 @@ class LayaRuntime:
             self.heart = Heart(self.guardian)
             self.memory = Memory()
             self.gateway = Gateway()
+            self.emotion = None
 
 
-        # ------------------------------
-        # Plugins
-        # ------------------------------
 
         self.plugins = PluginManager()
 
@@ -66,10 +68,6 @@ class LayaRuntime:
         )
 
 
-        # ------------------------------
-        # Skills
-        # ------------------------------
-
         self.skill_manager = SkillManager()
 
         self.skill_manager.register(
@@ -77,19 +75,11 @@ class LayaRuntime:
         )
 
 
-        # ------------------------------
-        # Router
-        # ------------------------------
-
         self.router = TaskRouter(
             None,
             self.plugins
         )
 
-
-        # ------------------------------
-        # AI Core
-        # ------------------------------
 
         self.ai_core = AICore(
             router=self.router,
@@ -101,33 +91,31 @@ class LayaRuntime:
         )
 
 
-        # ------------------------------
-        # Brain
-        # ------------------------------
-
         self.brain = CommandProcessor(
             self.memory,
             self.heart,
             self.ai_core
         )
 
+
         self.router.brain = self.brain
 
-
-        # ------------------------------
-        # Conversation
-        # ------------------------------
 
         self.history = ConversationHistory()
 
 
-        # ------------------------------
-        # Voice System
-        # ------------------------------
-
         self.startup = StartupManager()
 
+
+        # Voice system
+
         self.voice = WakeWord()
+
+        self.microphone = Microphone()
+
+        self.recognizer = SpeechRecognizer()
+
+        self.speaker = LayaVoice()
 
 
 
@@ -141,49 +129,37 @@ class LayaRuntime:
         print("                     LAYA")
         print("=" * 60)
 
-        print()
 
+        print()
 
         print(
             "Assistant :",
-            self.config.get("assistant", "name")
+            self.config.get("assistant","name")
         )
 
         print(
             "Version   :",
-            self.config.get("assistant", "version")
+            self.config.get("assistant","version")
         )
 
         print(
             "AI Model  :",
-            self.config.get("ai", "model")
+            self.config.get("ai","model")
         )
 
-
-        # Start Ollama automatically
 
         self.startup.initialize()
 
 
-
         self.dna.load()
-        Logger.info("DNA Loaded")
-
 
         self.guardian.load()
-        Logger.info("Guardian Loaded")
-
 
         self.heart.load()
-        Logger.info("Heart Loaded")
-
 
         self.memory.load()
-        Logger.info("Memory Loaded")
-
 
         self.gateway.load()
-        Logger.info("Gateway Loaded")
 
 
         print()
@@ -200,23 +176,19 @@ class LayaRuntime:
 
         print()
 
-        print("🎤 Wake word listener ready")
-        print("Say 'Hey Laya' to activate")
+        print("🎤 Voice Assistant Ready")
+        print("Say 'Hey Laya'")
 
 
 
     def chat(self):
 
-        print(
-            "Waiting for Hey Laya...\n"
-        )
-
 
         while True:
 
+
             try:
 
-                # Listen for wake word
 
                 activated = self.voice.listen()
 
@@ -226,15 +198,33 @@ class LayaRuntime:
                     continue
 
 
+
                 print(
-                    "🎤 Laya Activated"
+                    "🔥 Laya Activated"
                 )
 
 
-                user = input(
-                    "You : "
-                ).strip()
+                # Record user command
 
+                print(
+                    "🎤 Listening..."
+                )
+
+
+                self.microphone.record(
+                    seconds=5
+                )
+
+
+                user = self.recognizer.transcribe(
+                    "data/input.wav"
+                )
+
+
+                print(
+                    "You:",
+                    user
+                )
 
 
                 if not user:
@@ -243,44 +233,14 @@ class LayaRuntime:
 
 
 
-                if user.lower() == "exit":
+                if user.lower()=="exit":
 
-                    Logger.info(
-                        "Runtime Closed"
-                    )
-
-                    print(
-                        "Laya : Goodbye!"
+                    self.speaker.speak(
+                        "Goodbye"
                     )
 
                     break
 
-
-
-                Logger.info(
-                    f"USER : {user}"
-                )
-
-
-                self.history.add(
-                    "User",
-                    user
-                )
-
-
-                emotion = self.emotion.update(
-                    user
-                )
-
-
-                self.gateway.history.set_emotion(
-                    emotion.value
-                )
-
-
-                print(
-                    f"😊 Emotion: {emotion.value}"
-                )
 
 
                 response = self.ai_core.process(
@@ -288,30 +248,19 @@ class LayaRuntime:
                 )
 
 
-                self.history.add(
-                    "Laya",
+                print(
+                    "Laya:",
                     response
                 )
 
 
-                Logger.info(
-                    f"LAYA : {response}"
-                )
-
-
-                print(
-                    "Laya :",
+                self.speaker.speak(
                     response
                 )
 
 
 
             except Exception as e:
-
-
-                Logger.error(
-                    str(e)
-                )
 
 
                 print(

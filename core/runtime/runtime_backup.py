@@ -21,6 +21,7 @@ from core.aicore.core import AICore
 
 from core.conversation.history import ConversationHistory
 from core.system.startup import StartupManager
+from core.voice.wakeword import WakeWord
 
 
 class LayaRuntime:
@@ -32,6 +33,7 @@ class LayaRuntime:
         # ------------------------------
 
         try:
+
             self.container = ServiceContainer()
 
             self.config = self.container.config
@@ -51,24 +53,29 @@ class LayaRuntime:
             self.memory = Memory()
             self.gateway = Gateway()
 
+
         # ------------------------------
         # Plugins
         # ------------------------------
 
         self.plugins = PluginManager()
+
         self.plugins.register(
             "calculator",
             CalculatorPlugin()
         )
+
 
         # ------------------------------
         # Skills
         # ------------------------------
 
         self.skill_manager = SkillManager()
+
         self.skill_manager.register(
             CalculatorSkill()
         )
+
 
         # ------------------------------
         # Router
@@ -78,6 +85,7 @@ class LayaRuntime:
             None,
             self.plugins
         )
+
 
         # ------------------------------
         # AI Core
@@ -92,6 +100,7 @@ class LayaRuntime:
             skill_manager=self.skill_manager
         )
 
+
         # ------------------------------
         # Brain
         # ------------------------------
@@ -104,15 +113,28 @@ class LayaRuntime:
 
         self.router.brain = self.brain
 
+
         # ------------------------------
         # Conversation
         # ------------------------------
 
         self.history = ConversationHistory()
 
+
+        # ------------------------------
+        # Voice System
+        # ------------------------------
+
+        self.startup = StartupManager()
+
+        self.voice = WakeWord()
+
+
+
     def start(self):
 
         Logger.info("Starting Runtime")
+
 
         print("=" * 60)
         print("                PROJECT IGRIS")
@@ -121,75 +143,178 @@ class LayaRuntime:
 
         print()
 
-        print("Assistant :", self.config.get("assistant", "name"))
-        print("Version   :", self.config.get("assistant", "version"))
-        print("AI Model  :", self.config.get("ai", "model"))
 
-        print()
+        print(
+            "Assistant :",
+            self.config.get("assistant", "name")
+        )
+
+        print(
+            "Version   :",
+            self.config.get("assistant", "version")
+        )
+
+        print(
+            "AI Model  :",
+            self.config.get("ai", "model")
+        )
+
+
+        # Start Ollama automatically
+
+        self.startup.initialize()
+
+
 
         self.dna.load()
         Logger.info("DNA Loaded")
 
+
         self.guardian.load()
         Logger.info("Guardian Loaded")
+
 
         self.heart.load()
         Logger.info("Heart Loaded")
 
+
         self.memory.load()
         Logger.info("Memory Loaded")
+
 
         self.gateway.load()
         Logger.info("Gateway Loaded")
 
+
         print()
+
+        print("🧬 DNA Loaded")
+        print("🛡 Guardian Loaded")
+        print("❤️ Heart Loaded")
+        print("📦 Memory Loaded")
+        print("🌐 Gateway Loaded")
+
+        print()
+
         print("✅ Runtime Ready")
+
         print()
+
+        print("🎤 Wake word listener ready")
+        print("Say 'Hey Laya' to activate")
+
+
 
     def chat(self):
 
-        print("Type 'exit' to quit.\n")
+        print(
+            "Waiting for Hey Laya...\n"
+        )
+
 
         while True:
 
-            user = input("You : ").strip()
-
-            if not user:
-                continue
-
-            if user.lower() == "exit":
-
-                Logger.info("Runtime Closed")
-
-                print("Laya : Goodbye!")
-
-                break
-
-            Logger.info(f"USER : {user}")
-
-            self.history.add("User", user)
-
             try:
 
-                emotion = self.emotion.update(user)
+                # Listen for wake word
+
+                activated = self.voice.listen()
+
+
+                if not activated:
+
+                    continue
+
+
+                print(
+                    "🎤 Laya Activated"
+                )
+
+
+                user = input(
+                    "You : "
+                ).strip()
+
+
+
+                if not user:
+
+                    continue
+
+
+
+                if user.lower() == "exit":
+
+                    Logger.info(
+                        "Runtime Closed"
+                    )
+
+                    print(
+                        "Laya : Goodbye!"
+                    )
+
+                    break
+
+
+
+                Logger.info(
+                    f"USER : {user}"
+                )
+
+
+                self.history.add(
+                    "User",
+                    user
+                )
+
+
+                emotion = self.emotion.update(
+                    user
+                )
+
+
                 self.gateway.history.set_emotion(
-    emotion.value
-)
-                startup = StartupManager()
-                startup.initialize()
+                    emotion.value
+                )
 
-                print(f"😊 Emotion: {emotion.value}")
 
-                response = self.ai_core.process(user)
+                print(
+                    f"😊 Emotion: {emotion.value}"
+                )
+
+
+                response = self.ai_core.process(
+                    user
+                )
+
+
+                self.history.add(
+                    "Laya",
+                    response
+                )
+
+
+                Logger.info(
+                    f"LAYA : {response}"
+                )
+
+
+                print(
+                    "Laya :",
+                    response
+                )
+
+
 
             except Exception as e:
 
-                Logger.error(str(e))
 
-                response = f"Error: {e}"
+                Logger.error(
+                    str(e)
+                )
 
-            self.history.add("Laya", response)
 
-            Logger.info(f"LAYA : {response}")
-
-            print("Laya :", response)
+                print(
+                    "Laya Error:",
+                    e
+                )

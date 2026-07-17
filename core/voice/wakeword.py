@@ -6,36 +6,51 @@ import numpy as np
 
 class WakeWord:
 
+
     def __init__(self):
 
-        print("🧠 Loading wake word engine...")
+        print("🧠 Loading Laya wake engine...")
+
 
         openwakeword.utils.download_models()
 
+
         self.model = Model()
+
+
+        self.detected = False
+
 
         print("✅ Wake engine ready")
 
 
+
     def listen(self):
 
-        print("🎤 Waiting for wake word...")
+
+        print("🎤 Waiting for Laya...")
+
+
+        self.detected = False
+
 
 
         def callback(indata, frames, time, status):
 
+
             if status:
+
                 print(status)
 
 
-            # Convert (frames,1) -> (frames,)
+
             audio = np.squeeze(indata)
 
 
-            # Convert float32 -> int16
             audio = (
                 audio * 32767
             ).astype(np.int16)
+
 
 
             prediction = self.model.predict(
@@ -43,21 +58,22 @@ class WakeWord:
             )
 
 
-            for key, score in prediction.items():
 
-                if score > 0.5:
+            for name, score in prediction.items():
+
+
+                if score > 0.6:
+
 
                     print(
-                        "Wake detected:",
-                        key,
+                        "🔥 Wake detected:",
+                        name,
                         score
                     )
 
+
                     self.detected = True
 
-
-
-        self.detected = False
 
 
         with sd.InputStream(
@@ -65,12 +81,15 @@ class WakeWord:
             channels=1,
             dtype="float32",
             blocksize=1280,
+            device=1,
             callback=callback
         ):
+
 
             while not self.detected:
 
                 sd.sleep(100)
+
 
 
         return True
