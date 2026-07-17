@@ -1,9 +1,11 @@
+from core.agent.planner import AIPlanner
+from core.agent.validator import SafetyValidator
 from core.agent.executor import Executor
 from core.agent.learning import LearningMemory
 from core.cognition.intent import IntentDetector
 from core.agent.router import ActionRouter
+from core.security.permission import PermissionManager
 from core.agent.goal_manager import GoalManager
-from core.agent.verifier import PlanVerifier
 
 
 
@@ -11,6 +13,10 @@ class AgentController:
 
 
     def __init__(self):
+
+        self.planner = AIPlanner()
+
+        self.validator = SafetyValidator()
 
         self.executor = Executor()
 
@@ -20,9 +26,9 @@ class AgentController:
 
         self.router = ActionRouter()
 
-        self.goal = GoalManager()
+        self.permission = PermissionManager()
 
-        self.verifier = PlanVerifier()
+        self.goal = GoalManager()
 
 
 
@@ -55,7 +61,7 @@ class AgentController:
 
 
 
-        print("\n🧩 Creating goal...")
+        print("\n🧩 Planning goal...")
 
 
         goal = self.goal.create_goal(
@@ -77,12 +83,16 @@ class AgentController:
         )
 
 
+        print(
+            goal
+        )
+
+
+
+        print("\n⚙️ Executing steps...")
+
 
         results = []
-
-
-
-        print("\n⚙️ Executing...")
 
 
         while True:
@@ -106,34 +116,7 @@ class AgentController:
             )
 
 
-            verification = self.verifier.verify(
-                result
-            )
-
-
-            results.append({
-
-                "result": result,
-
-                "verification": verification
-
-            })
-
-
-
-            if not verification["verified"]:
-
-
-                print(
-                    "🔄 Attempt failed"
-                )
-
-
-            else:
-
-                print(
-                    "✅ Step verified"
-                )
+            results.append(result)
 
 
 
