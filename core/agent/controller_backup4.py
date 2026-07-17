@@ -5,7 +5,6 @@ from core.agent.learning import LearningMemory
 from core.cognition.intent import IntentDetector
 from core.agent.router import ActionRouter
 from core.security.permission import PermissionManager
-from core.agent.goal_manager import GoalManager
 
 
 
@@ -28,8 +27,6 @@ class AgentController:
 
         self.permission = PermissionManager()
 
-        self.goal = GoalManager()
-
 
 
     def process(self, request):
@@ -43,14 +40,14 @@ class AgentController:
         )
 
 
-        tool = self.router.route(
-            intent_result["intent"]
-        )
-
-
         print(
             "Intent:",
             intent_result
+        )
+
+
+        tool = self.router.route(
+            intent_result["intent"]
         )
 
 
@@ -61,62 +58,66 @@ class AgentController:
 
 
 
-        print("\n🧩 Planning goal...")
+        print("\n🧩 Creating plan...")
 
 
-        goal = self.goal.create_goal(
-
-            request,
-
-            [
-
-                {
-
-                    "tool": tool,
-
-                    "data": request
-
-                }
-
-            ]
-
+        goal = self.planner.create_plan(
+            request
         )
 
 
-        print(
+
+        print("\n🛡️ Checking safety...")
+
+
+        security = self.validator.validate(
             goal
         )
 
 
+        if not security["allowed"]:
 
-        print("\n⚙️ Executing steps...")
+            return {
 
+                "status":"blocked",
 
-        results = []
+                "security":security
 
-
-        while True:
-
-
-            step = self.goal.next_step()
-
-
-            if step is None:
-
-                break
+            }
 
 
 
-            result = self.executor.execute(
+        if self.permission.requires_permission(
+            request
+        ):
 
-                step["tool"],
 
-                step["data"]
-
+            approved = self.permission.ask_permission(
+                request
             )
 
 
-            results.append(result)
+            if not approved:
+
+                return {
+
+                    "status":
+                    "permission_denied"
+
+                }
+
+
+
+        print("\n⚙️ Executing task...")
+
+
+        result = self.executor.execute(
+
+            tool,
+
+            request
+
+        )
 
 
 
@@ -126,18 +127,19 @@ class AgentController:
 
             intent_result["intent"],
 
-            results
+            result
 
         )
 
 
-
         return {
 
-            "goal": goal,
+            "intent":intent_result,
 
-            "results": results,
+            "tool":tool,
 
-            "memory": memory
+            "execution":result,
+
+            "memory":memory
 
         }
