@@ -7,4 +7,11 @@ class AIService:
         self.client = OllamaClient()
 
     def ask(self, prompt):
-        return self.client.ask(prompt)
+
+        print("🔹 AIService: sending prompt...")
+
+        response = self.client.ask(prompt)
+
+        print("🔹 AIService: received response")
+
+        return response

@@ -12,6 +12,8 @@ class CommandProcessor:
     def execute(self, command):
 
         lower = command.lower().strip()
+        # Learn automatically from conversation
+        self.memory.learn(command)
 
         # ---------- Memory ----------
 

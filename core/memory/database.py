@@ -1,10 +1,11 @@
 import sqlite3
 from datetime import datetime
-
+from core.security.encryption import EncryptionManager
 
 class Database:
 
     def __init__(self):
+        self.encryption = EncryptionManager()
 
         self.connection = sqlite3.connect(
             "data/memory.db",
@@ -57,6 +58,8 @@ class Database:
 
         if existing is not None:
 
+            encrypted_value = self.encryption.encrypt(value)
+
             self.cursor.execute(
                 """
                 UPDATE memories
@@ -67,7 +70,7 @@ class Database:
                 WHERE key=?
                 """,
                 (
-                    value,
+                    encrypted_value,
                     memory_type,
                     importance,
                     now,
@@ -77,7 +80,8 @@ class Database:
 
             self.connection.commit()
             return
-
+        
+        encrypted_value = self.encryption.encrypt(value)
 
         self.cursor.execute(
             """
@@ -95,7 +99,7 @@ class Database:
             """,
             (
                 key,
-                value,
+                encrypted_value,
                 memory_type,
                 importance,
                 now,
@@ -121,8 +125,10 @@ class Database:
         row = self.cursor.fetchone()
 
         if row:
-            return row[0]
 
+            return self.encryption.decrypt(
+        row[0]
+        )
         return None
 
 

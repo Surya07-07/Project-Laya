@@ -1,43 +1,140 @@
 from core.memory.database import Database
-from core.memory.classifier import MemoryClassifier
+from core.memory.ranker import MemoryRanker
+from core.memory.extractor import MemoryExtractor
+from core.memory.semantic import SemanticMemory
+from core.guardian.guardian import Guardian
 
 
 class MemoryService:
 
+
     def __init__(self):
 
         self.db = Database()
-        self.classifier = MemoryClassifier()
+
+        self.ranker = MemoryRanker()
+
+        self.extractor = MemoryExtractor()
+
+        self.semantic = SemanticMemory()
+
+        self.guardian = Guardian()
+
 
 
     def remember(self, key, value):
 
         text = f"{key} {value}"
 
-        decision = self.classifier.classify(text)
 
+        # Guardian security check
+        security = self.guardian.check_memory(text)
+
+
+        if not security["allowed"]:
+
+            return {
+                "status": "blocked",
+                "reason": security["reason"]
+            }
+
+
+
+        # Decide importance
+        decision = self.ranker.rank(text)
+
+
+
+        # Save encrypted memory
         self.db.save(
+
             key,
+
             value,
-            decision["category"],
+
+            decision["type"].value,
+
             decision["score"]
+
         )
 
-        return (
-            f"I'll remember your {key}. "
-            f"Memory type: {decision['category']} "
-            f"Score: {decision['score']}"
+
+        return {
+
+            "status": "saved",
+
+            "key": key,
+
+            "value": value,
+
+            "type": decision["type"].value,
+
+            "score": decision["score"]
+
+        }
+
+
+
+    def remember_sentence(self, sentence):
+
+
+        # Extract memory from sentence
+
+        memory = self.extractor.extract(sentence)
+
+
+        if memory is None:
+
+            return {
+
+                "status": "ignored",
+
+                "reason": "No memory detected"
+
+            }
+
+
+
+        key, value = memory
+
+
+
+        return self.remember(
+
+            key,
+
+            value
+
         )
+
 
 
     def recall(self, key):
 
         value = self.db.get(key)
 
+
         if value is None:
-            return f"I don't know your {key}."
+
+            return None
+
 
         return value
+
+
+
+    def search(self, question):
+
+        key = self.semantic.find_key(question)
+
+
+        if key is None:
+
+            return None
+
+
+        return self.db.get(key)
+
 
 
     def memories(self):
@@ -45,8 +142,16 @@ class MemoryService:
         return self.db.get_all()
 
 
+
     def forget(self, key):
 
         self.db.delete(key)
 
-        return f"I forgot your {key}."
+
+        return {
+
+            "status": "deleted",
+
+            "key": key
+
+        }

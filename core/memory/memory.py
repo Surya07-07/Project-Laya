@@ -3,6 +3,7 @@ from core.memory.ranker import MemoryRanker
 from core.memory.types import MemoryType
 from core.memory.semantic import SemanticMemory
 from core.memory.extractor import MemoryExtractor
+from core.memory.extractor import MemoryExtractor
 
 
 class Memory:

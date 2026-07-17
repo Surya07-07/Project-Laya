@@ -3,9 +3,10 @@ from core.memory.types import MemoryType
 
 class MemoryRanker:
 
-    def classify(self, text):
+    def rank(self, text):
 
         text = text.lower().strip()
+
 
         permanent = [
             "name",
@@ -23,14 +24,17 @@ class MemoryRanker:
             "hometown"
         ]
 
+
         important = [
             "exam",
             "meeting",
             "assignment",
             "deadline",
             "today",
-            "tomorrow"
+            "tomorrow",
+            "project"
         ]
+
 
         temporary = [
             "remember this",
@@ -38,17 +42,41 @@ class MemoryRanker:
             "current task"
         ]
 
+
         for word in permanent:
+
             if word in text:
-                return MemoryType.PERMANENT
+
+                return {
+                    "type": MemoryType.PERMANENT,
+                    "score": 95
+                }
+
+
 
         for word in important:
+
             if word in text:
-                return MemoryType.IMPORTANT
+
+                return {
+                    "type": MemoryType.IMPORTANT,
+                    "score": 60
+                }
+
+
 
         for word in temporary:
-            if word in text:
-                return MemoryType.TEMPORARY
 
-        # Store unknown memories as permanent during development
-        return MemoryType.PERMANENT
+            if word in text:
+
+                return {
+                    "type": MemoryType.TEMPORARY,
+                    "score": 20
+                }
+
+
+
+        return {
+            "type": MemoryType.TEMPORARY,
+            "score": 10
+        }

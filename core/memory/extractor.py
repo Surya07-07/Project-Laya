@@ -3,40 +3,31 @@ import re
 
 class MemoryExtractor:
 
-    def extract(self, text):
+    def extract(self, sentence):
 
-        text = text.strip()
+        text = sentence.strip()
 
         patterns = [
 
             (r"my name is (.+)", "name"),
-
-            (r"i am (.+)", "identity"),
-
-            (r"i'm (.+)", "identity"),
-
+            (r"i am (.+)", "name"),
+            (r"my favorite (.+) is (.+)", None),
             (r"my birthday is (.+)", "birthday"),
-
-            (r"my college is (.+)", "college"),
-
             (r"my city is (.+)", "city"),
-
-            (r"my favorite (.+) is (.+)", "favorite")
+            (r"my college is (.+)", "college"),
+            (r"i prefer (.+)", "preference"),
 
         ]
 
-        lower = text.lower()
-
         for pattern, key in patterns:
 
-            match = re.search(pattern, lower)
+            match = re.search(pattern, text, re.IGNORECASE)
 
             if match:
 
-                if key == "favorite":
-
+                if key is None:
                     return (
-                        f"favorite_{match.group(1).strip()}",
+                        "favorite_" + match.group(1).strip(),
                         match.group(2).strip()
                     )
 

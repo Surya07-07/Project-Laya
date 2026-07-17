@@ -1,7 +1,9 @@
 class ConversationHistory:
 
     def __init__(self):
+
         self.messages = []
+        self._emotion = "neutral"
 
     def add(self, role, message):
 
@@ -29,3 +31,11 @@ class ConversationHistory:
     def clear(self):
 
         self.messages.clear()
+
+    def set_emotion(self, emotion):
+
+        self._emotion = emotion
+
+    def last_emotion(self):
+
+        return self._emotion

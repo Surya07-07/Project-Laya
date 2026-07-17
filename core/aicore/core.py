@@ -47,10 +47,12 @@ class AICore:
             return result
 
         # ---------- AI ----------
+        emotion = self.gateway.history.last_emotion()
 
         prompt = self.prompt_builder.build(
-            self.gateway.history,
-            command
-        )
+    self.gateway.history,
+    command,
+    emotion
+)
 
         return self.ai.ask(prompt)

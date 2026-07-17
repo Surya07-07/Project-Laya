@@ -34,4 +34,7 @@ dist/
 
 # OS Files
 .DS_Store
-Thumbs.db
+Thumb.db
+#NEVER
+data/laya.key
+data/*.db

@@ -1,53 +1,88 @@
 from app.config import Config
 from app.logger import Logger
-from core.brain.processor import CommandProcessor
+
+from core.container.container import ServiceContainer
+
 from core.dna.dna import DNA
-from core.gateway.gateway import Gateway
 from core.guardian.guardian import Guardian
 from core.heart.heart import Heart
 from core.memory.memory import Memory
+from core.gateway.gateway import Gateway
+
 from core.plugins.plugin_manager import PluginManager
-from core.router.router import TaskRouter
 from plugins.calculator.plugin import CalculatorPlugin
-from core.aicore.core import AICore
+
 from core.skills.manager import SkillManager
 from skills.calculator.skill import CalculatorSkill
+
+from core.router.router import TaskRouter
+from core.brain.processor import CommandProcessor
+from core.aicore.core import AICore
+
 from core.conversation.history import ConversationHistory
+from core.system.startup import StartupManager
+
 
 class LayaRuntime:
 
     def __init__(self):
 
-        # Configuration
-        self.config = Config()
+        # ------------------------------
+        # Dependency Container
+        # ------------------------------
 
-        # Core Modules
-        self.dna = DNA()
-        self.guardian = Guardian()
-        self.heart = Heart(self.guardian)
-        self.memory = Memory()
-        self.gateway = Gateway()
+        try:
+            self.container = ServiceContainer()
 
-        # Plugin Manager
+            self.config = self.container.config
+            self.dna = self.container.dna
+            self.guardian = self.container.guardian
+            self.heart = self.container.heart
+            self.memory = self.container.memory
+            self.gateway = self.container.gateway
+            self.emotion = self.container.emotion
+
+        except Exception:
+
+            self.config = Config()
+            self.dna = DNA()
+            self.guardian = Guardian()
+            self.heart = Heart(self.guardian)
+            self.memory = Memory()
+            self.gateway = Gateway()
+
+        # ------------------------------
+        # Plugins
+        # ------------------------------
+
         self.plugins = PluginManager()
         self.plugins.register(
             "calculator",
             CalculatorPlugin()
         )
 
-        # Skill Manager
+        # ------------------------------
+        # Skills
+        # ------------------------------
+
         self.skill_manager = SkillManager()
         self.skill_manager.register(
             CalculatorSkill()
         )
 
+        # ------------------------------
         # Router
+        # ------------------------------
+
         self.router = TaskRouter(
             None,
             self.plugins
         )
 
+        # ------------------------------
         # AI Core
+        # ------------------------------
+
         self.ai_core = AICore(
             router=self.router,
             memory=self.memory,
@@ -57,22 +92,27 @@ class LayaRuntime:
             skill_manager=self.skill_manager
         )
 
+        # ------------------------------
         # Brain
+        # ------------------------------
+
         self.brain = CommandProcessor(
             self.memory,
             self.heart,
             self.ai_core
         )
 
-        # Connect router to brain
         self.router.brain = self.brain
 
-        # Conversation History
+        # ------------------------------
+        # Conversation
+        # ------------------------------
+
         self.history = ConversationHistory()
 
     def start(self):
 
-        Logger.info("Starting Laya Runtime")
+        Logger.info("Starting Runtime")
 
         print("=" * 60)
         print("                PROJECT IGRIS")
@@ -102,7 +142,9 @@ class LayaRuntime:
         self.gateway.load()
         Logger.info("Gateway Loaded")
 
-        print("\n✅ Runtime Ready\n")
+        print()
+        print("✅ Runtime Ready")
+        print()
 
     def chat(self):
 
@@ -110,9 +152,10 @@ class LayaRuntime:
 
         while True:
 
-            user = input("You : ")
+            user = input("You : ").strip()
 
-            Logger.info(f"USER : {user}")
+            if not user:
+                continue
 
             if user.lower() == "exit":
 
@@ -122,20 +165,31 @@ class LayaRuntime:
 
                 break
 
-            self.gateway.history.add(
-    "User",
-    user
+            Logger.info(f"USER : {user}")
+
+            self.history.add("User", user)
+
+            try:
+
+                emotion = self.emotion.update(user)
+                self.gateway.history.set_emotion(
+    emotion.value
 )
+                startup = StartupManager()
+                startup.initialize()
 
-            self.memory.learn(user)
+                print(f"😊 Emotion: {emotion.value}")
 
-        response = self.ai_core.process(user)
+                response = self.ai_core.process(user)
 
-        self.gateway.history.add(
-    "Laya",
-    response
-)
+            except Exception as e:
 
-        Logger.info(f"LAYA : {response}")
+                Logger.error(str(e))
 
-        print("Laya :", response)
+                response = f"Error: {e}"
+
+            self.history.add("Laya", response)
+
+            Logger.info(f"LAYA : {response}")
+
+            print("Laya :", response)
