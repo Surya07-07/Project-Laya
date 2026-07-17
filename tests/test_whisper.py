@@ -1,16 +1,43 @@
-from core.voice.audio import AudioRecorder
-from core.voice.whisper_engine import WhisperEngine
+from core.voice.microphone import Microphone
+from core.speech.whisper_engine import WhisperEngine
+from core.language.manager import LanguageManager
 
-audio = AudioRecorder()
+mic = Microphone()
 
 engine = WhisperEngine()
 
-filename = audio.record()
+lang = LanguageManager()
 
-text = engine.transcribe(filename)
+mic.start()
+
+print()
+print("========================================")
+print("Speak in ANY language")
+print("English")
+print("తెలుగు")
+print("हिन्दी")
+print("தமிழ்")
+print("ಕನ್ನಡ")
+print("========================================")
+print()
+
+mic.record(5)
+
+result = engine.transcribe("data/input.wav")
+
+lang.update(result["language"])
 
 print()
 
-print("You said:")
+print("Detected Code :", lang.code())
+print("Detected Name :", lang.name())
 
-print(text)
+print()
+
+print("Recognized Text")
+
+print("----------------------------------------")
+
+print(result["text"])
+
+mic.stop()
