@@ -1,12 +1,14 @@
-from core.agent.planner import AIPlanner
+from core.agent.controller import AgentController
 
 
-planner = AIPlanner()
+agent = AgentController()
 
-goal = planner.create_plan(
+
+result = agent.process(
     "Organize my downloads folder"
 )
 
-print("\n🧠 Laya AI Agent Test\n")
 
-print(goal.show())
+print("\n🚀 Laya Agent Result\n")
+
+print(result)
