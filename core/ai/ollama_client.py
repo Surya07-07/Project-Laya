@@ -1,45 +1,29 @@
-import ollama
-from app.config import Config
+import requests
 
 
 class OllamaClient:
 
     def __init__(self):
-        config = Config()
-
-        self.model = config.get("ai", "model")
-
-        self.client = ollama.Client(
-            host="http://127.0.0.1:11434"
-        )
+        self.url = "http://127.0.0.1:11434/api/generate"
+        self.model = "llama3.2:3b"
 
 
     def ask(self, prompt):
 
-        print("🔹 Connecting to Ollama...")
-        print("Model:", self.model)
+        data = {
+            "model": self.model,
+            "prompt": prompt,
+            "stream": False
+        }
 
-        try:
-            response = self.client.chat(
-                model=self.model,
-                messages=[
-                    {
-                        "role": "user",
-                        "content": prompt
-                    }
-                ]
-            )
+        response = requests.post(
+            self.url,
+            json=data
+        )
 
-            print("🔹 Ollama replied")
+        result = response.json()
 
-            return response["message"]["content"].strip()
-
-
-        except Exception as e:
-
-            print("❌ Ollama Error:", e)
-
-            return (
-                "I am unable to connect to my local AI brain. "
-                "Please start Ollama."
-            )
+        return result.get(
+            "response",
+            ""
+        )

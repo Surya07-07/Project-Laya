@@ -1,52 +1,23 @@
-from dataclasses import dataclass, field
-from datetime import datetime
-
-
-@dataclass
 class Goal:
 
-    title: str
+    def __init__(self, description):
+        self.description = description
+        self.steps = []
+        self.status = "created"
+        self.risk = "unknown"
+        self.permission_required = False
 
-    goal_type: str = "general"
+    def add_step(self, step):
+        self.steps.append(step)
 
-    priority: str = "normal"
+    def update_status(self, status):
+        self.status = status
 
-    created_at: datetime = field(default_factory=datetime.now)
-
-    completed: bool = False
-
-    tasks: list = field(default_factory=list)
-
-    notes: list = field(default_factory=list)
-
-    def add_task(self, task):
-
-        self.tasks.append(task)
-
-    def add_note(self, note):
-
-        self.notes.append(note)
-
-    def finish(self):
-
-        self.completed = True
-
-    def summary(self):
-
+    def show(self):
         return {
-
-            "title": self.title,
-
-            "type": self.goal_type,
-
-            "priority": self.priority,
-
-            "completed": self.completed,
-
-            "tasks": self.tasks,
-
-            "notes": self.notes,
-
-            "created_at": str(self.created_at)
-
+            "goal": self.description,
+            "steps": self.steps,
+            "status": self.status,
+            "risk": self.risk,
+            "permission": self.permission_required
         }

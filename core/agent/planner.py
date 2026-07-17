@@ -1,91 +1,42 @@
 from core.agent.goal import Goal
+from core.ai.ollama_client import OllamaClient
 
 
-class GoalPlanner:
+class AIPlanner:
 
-    def create_goal(self, command):
 
-        text = command.lower().strip()
+    def __init__(self):
+        self.ai = OllamaClient()
 
-        goal = Goal(title=command)
 
-        # ------------------------
-        # Development
-        # ------------------------
+    def create_plan(self, request):
 
-        if "laya" in text:
+        prompt = f"""
+You are Laya AI Planner.
 
-            goal.goal_type = "development"
-            goal.priority = "high"
+User Goal:
+{request}
 
-            goal.add_task("Open VS Code")
-            goal.add_task("Open Project Folder")
-            goal.add_task("Open Git Bash")
-            goal.add_task("Start Ollama")
-            goal.add_task("Load Memory")
+Create a safe step-by-step plan.
 
-            return goal
+Rules:
+- Do not perform dangerous actions.
+- Explain steps clearly.
+- Mention if permission is required.
+"""
 
-        # ------------------------
-        # Study
-        # ------------------------
+        response = self.ai.ask(prompt)
 
-        if "study" in text or "exam" in text:
 
-            goal.goal_type = "study"
-            goal.priority = "high"
+        goal = Goal(request)
 
-            goal.add_task("Open Browser")
-            goal.add_task("Open Notes")
-            goal.add_task("Open PDF Reader")
+        goal.add_step(response)
 
-            return goal
+        goal.risk = "unknown"
+        goal.permission_required = True
 
-        # ------------------------
-        # Coding
-        # ------------------------
-
-        if "code" in text or "program" in text:
-
-            goal.goal_type = "coding"
-
-            goal.priority = "high"
-
-            goal.add_task("Open VS Code")
-            goal.add_task("Open Terminal")
-
-            return goal
-
-        # ------------------------
-        # Music
-        # ------------------------
-
-        if "music" in text:
-
-            goal.goal_type = "music"
-
-            goal.add_task("Open Spotify")
-
-            return goal
-
-        # ------------------------
-        # Browser
-        # ------------------------
-
-        if "browser" in text or "internet" in text:
-
-            goal.goal_type = "browser"
-
-            goal.add_task("Open Browser")
-
-            return goal
-
-        # ------------------------
-        # Default
-        # ------------------------
-
-        goal.goal_type = "general"
-
-        goal.add_task(command)
+        goal.update_status(
+            "planned_by_ai"
+        )
 
         return goal
