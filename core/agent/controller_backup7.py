@@ -5,7 +5,6 @@ from core.agent.router import ActionRouter
 from core.agent.goal_manager import GoalManager
 from core.agent.verifier import PlanVerifier
 from core.agent.retry_engine import RetryEngine
-from core.memory.context import ContextManager
 
 
 
@@ -27,8 +26,6 @@ class AgentController:
         self.verifier = PlanVerifier()
 
         self.retry = RetryEngine()
-
-        self.context = ContextManager()
 
 
 
@@ -61,16 +58,6 @@ class AgentController:
 
 
 
-        print(
-            "\n📌 Previous Context:"
-        )
-
-        print(
-            self.context.get()
-        )
-
-
-
         goal = self.goal.create_goal(
 
             request,
@@ -95,9 +82,7 @@ class AgentController:
 
 
 
-        print(
-            "\n⚙️ Executing..."
-        )
+        print("\n⚙️ Executing goal...")
 
 
         while True:
@@ -123,11 +108,13 @@ class AgentController:
             )
 
 
+
             verification = self.verifier.verify(
 
                 retry_result["result"]
 
             )
+
 
 
             results.append({
@@ -140,15 +127,17 @@ class AgentController:
 
 
 
-            self.context.update(
+            if verification["verified"]:
 
-                request,
+                print(
+                    "✅ Task completed"
+                )
 
-                tool,
+            else:
 
-                retry_result
-
-            )
+                print(
+                    "❌ Task failed after retries"
+                )
 
 
 
@@ -167,8 +156,6 @@ class AgentController:
         return {
 
             "goal": goal,
-
-            "context": self.context.get(),
 
             "results": results,
 
