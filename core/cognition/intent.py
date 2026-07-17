@@ -38,7 +38,7 @@ class IntentDetector:
 
     def detect(self,text):
 
-        text=text.lower()
+        text=text.lower().strip()
 
 
         for intent,words in self.intents.items():
@@ -48,12 +48,18 @@ class IntentDetector:
                 if word in text:
 
                     return {
-                        "intent": intent,
-                        "confidence": 0.9
+
+                        "intent":intent,
+
+                        "confidence":0.9
+
                     }
 
 
         return {
+
             "intent":"unknown",
+
             "confidence":0
+
         }
