@@ -1,36 +1,39 @@
-from core.automation.app_launcher import AppLauncher
+from core.automation.app_indexer import AppIndexer
 from core.automation.browser import Browser
-from core.automation.system import SystemAutomation
 
 
 class AutomationManager:
 
     def __init__(self):
 
-        self.apps = AppLauncher()
-
         self.browser = Browser()
 
-        self.system = SystemAutomation()
+        self.indexer = AppIndexer()
+
+        print("🔍 Scanning installed applications...")
+
+        count = len(self.indexer.scan())
+
+        print(f"✅ {count} applications indexed")
 
     def handle(self, command):
 
-        cmd = command.lower()
+        command = command.lower().strip()
 
-        if cmd.startswith("open "):
+        if command.startswith("open "):
 
-            app = cmd.replace("open ", "")
+            target = command[5:]
 
-            if self.apps.open(app):
+            if "." in target:
 
-                return f"Opening {app}"
+                self.browser.open(target)
 
-            if "." in app:
+                return f"Opening {target}"
 
-                self.browser.open(app)
+            if self.indexer.launch(target):
 
-                return f"Opening {app}"
+                return f"Opening {target}"
 
-            return "Application not found."
+            return f"I couldn't find '{target}'."
 
         return None
