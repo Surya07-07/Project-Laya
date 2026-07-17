@@ -1,4 +1,6 @@
 from core.automation.file_executor import FileExecutor
+from core.automation.desktop_controller import DesktopController
+from core.automation.memory_executor import MemoryExecutor
 
 
 class Executor:
@@ -7,29 +9,50 @@ class Executor:
     def __init__(self):
 
         self.file = FileExecutor()
+        self.desktop = DesktopController()
+        self.memory = MemoryExecutor()
 
 
 
-    def execute(self, action, data):
+    def execute(self, tool, data):
 
 
-        if action == "create_folder":
+        if tool == "file":
 
             return self.file.create_folder(
+                "Laya_Test"
+            )
+
+
+        elif tool == "desktop":
+
+            return self.desktop.open_app(
                 data
             )
 
 
-        elif action == "list_folder":
+        elif tool == "type":
 
-            return self.file.list_folder(
+            return self.desktop.type_text(
                 data
             )
 
 
-        else:
+        elif tool == "key":
 
-            return {
-                "success": False,
-                "message": "Unknown action"
-            }
+            return self.desktop.press_key(
+                data
+            )
+
+
+        elif tool == "memory":
+
+            return self.memory.save(
+                data
+            )
+
+
+        return {
+            "success": False,
+            "message": "Unknown tool"
+        }

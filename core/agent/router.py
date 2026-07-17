@@ -5,31 +5,23 @@ class ActionRouter:
 
         self.routes = {
 
-            "create_folder":
-            "file",
+            "create_folder":"file",
 
+            "open_application":"desktop",
 
-            "open_application":
-            "desktop",
+            "type_text":"type",
 
+            "press_key":"key",
 
-            "memory_save":
-            "memory",
-
-
-            "search":
-            "browser"
+            "memory_save":"memory"
 
         }
 
 
 
-    def route(self, intent):
+    def route(self,intent):
 
-        tool = self.routes.get(
+        return self.routes.get(
             intent,
             "unknown"
         )
-
-
-        return tool

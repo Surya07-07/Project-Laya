@@ -52,5 +52,50 @@
             "message": "Unknown action"
         },
         "time": "2026-07-17 16:54:59.522000"
+    },
+    {
+        "task": "open brave",
+        "action": "open_application",
+        "result": {
+            "success": false,
+            "error": "[WinError 2] The system cannot find the file specified"
+        },
+        "time": "2026-07-17 16:59:06.121418"
+    },
+    {
+        "task": "open notepad",
+        "action": "open_application",
+        "result": {
+            "success": false,
+            "error": "[WinError 2] The system cannot find the file specified"
+        },
+        "time": "2026-07-17 16:59:17.661290"
+    },
+    {
+        "task": "open notepad",
+        "action": "open_application",
+        "result": {
+            "success": true,
+            "message": "Opened open notepad"
+        },
+        "time": "2026-07-17 17:00:22.844407"
+    },
+    {
+        "task": "open notepad",
+        "action": "open_application",
+        "result": {
+            "success": true,
+            "message": "Opened notepad"
+        },
+        "time": "2026-07-17 17:01:59.585079"
+    },
+    {
+        "task": "open calculator",
+        "action": "open_application",
+        "result": {
+            "success": true,
+            "message": "Opened calculator"
+        },
+        "time": "2026-07-17 17:02:14.625148"
     }
 ]
