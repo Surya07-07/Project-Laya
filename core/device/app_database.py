@@ -1,6 +1,8 @@
 import json
 import os
 
+from core.device.app_matcher import AppMatcher
+
 
 class AppDatabase:
 
@@ -67,6 +69,7 @@ class AppDatabase:
 
         with open(
             "data/apps.json",
+            "r",
             encoding="utf-8"
         ) as f:
 
@@ -78,12 +81,12 @@ class AppDatabase:
 
         name = name.lower()
 
-        for app in self.apps:
+        # Exact match
+        if name in self.apps:
 
-            if app == name:
+            return self.apps[name]
 
-                return self.apps[app]
-
+        # Partial match
         for app in self.apps:
 
             if name in app:
@@ -92,14 +95,21 @@ class AppDatabase:
 
         return None
 
-    def launch(self, name):
+    def launch(self, query):
 
-        shortcut = self.search(name)
+        if not self.apps:
+            self.load()
+
+        matcher = AppMatcher(self)
+
+        shortcut = matcher.find(query)
 
         if shortcut is None:
-
             return False
 
-        os.startfile(shortcut)
-
-        return True
+        try:
+            os.startfile(shortcut)
+            return True
+        except Exception as e:
+            print("Launch Error:", e)
+            return False
