@@ -1,5 +1,5 @@
-from core.agent.planner import GoalPlanner
 from core.agent.executor import GoalExecutor
+from core.agent.planner import GoalPlanner
 
 planner = GoalPlanner()
 

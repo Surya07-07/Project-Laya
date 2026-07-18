@@ -19,5 +19,5 @@ class Goal:
             "steps": self.steps,
             "status": self.status,
             "risk": self.risk,
-            "permission": self.permission_required
+            "permission": self.permission_required,
         }

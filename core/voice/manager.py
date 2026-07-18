@@ -1,9 +1,9 @@
 import time
 
-from core.voice.state import VoiceState
 from core.voice.listener import Listener
 from core.voice.microphone import Microphone
 from core.voice.speaker import Speaker
+from core.voice.state import VoiceState
 from core.voice.wake_word import WakeWordDetector
 
 
@@ -97,9 +97,7 @@ class VoiceManager:
 
             return False
 
-        return (
-            time.time() - self.last_activity
-        ) < self.SESSION_TIMEOUT
+        return (time.time() - self.last_activity) < self.SESSION_TIMEOUT
 
     def sleep(self):
 

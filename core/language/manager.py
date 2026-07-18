@@ -11,7 +11,7 @@ class LanguageManager:
         "bn": "Bengali",
         "gu": "Gujarati",
         "pa": "Punjabi",
-        "ur": "Urdu"
+        "ur": "Urdu",
     }
 
     def __init__(self):
@@ -30,7 +30,4 @@ class LanguageManager:
 
     def name(self):
 
-        return self.LANGUAGE_NAMES.get(
-            self.current_language,
-            self.current_language
-        )
+        return self.LANGUAGE_NAMES.get(self.current_language, self.current_language)

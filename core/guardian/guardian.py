@@ -4,16 +4,9 @@ class Guardian:
 
         self.protection = True
 
-        self.allowed_actions = [
-            "open_app",
-            "read_file",
-            "remember",
-            "speak"
-        ]
-
+        self.allowed_actions = ["open_app", "read_file", "remember", "speak"]
 
         self.sensitive_words = [
-
             "password",
             "passwd",
             "pin",
@@ -25,54 +18,35 @@ class Guardian:
             "api key",
             "secret key",
             "private key",
-            "token"
+            "token",
         ]
-
-
 
     def load(self):
 
         print("🛡️ Guardian Loaded")
 
-
-
     def authorize(self, action):
 
-        print(
-            f"🛡️ Checking permission for: {action}"
-        )
-
+        print(f"🛡️ Checking permission for: {action}")
 
         if action == "internet":
 
             return False
 
-
         if action in self.allowed_actions:
 
             return True
 
-
         return False
-
-
 
     def check_memory(self, text):
 
         text = text.lower()
 
-
         for word in self.sensitive_words:
 
             if word in text:
 
-                return {
-                    "allowed": False,
-                    "reason": "Sensitive information detected"
-                }
+                return {"allowed": False, "reason": "Sensitive information detected"}
 
-
-        return {
-            "allowed": True,
-            "reason": "Safe memory"
-        }
+        return {"allowed": True, "reason": "Safe memory"}

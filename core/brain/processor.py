@@ -25,10 +25,7 @@ class CommandProcessor:
 
                 key, value = text.split(" is ", 1)
 
-                return self.memory.remember(
-                    key.strip(),
-                    value.strip()
-                )
+                return self.memory.remember(key.strip(), value.strip())
 
         if lower.startswith("what is my"):
 

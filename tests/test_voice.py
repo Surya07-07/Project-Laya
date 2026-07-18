@@ -1,7 +1,7 @@
-from core.voice.listener import VoiceListener
+from core.voice.assistant import VoiceAssistant
 
-listener = VoiceListener()
+if __name__ == "__main__":
 
-text = listener.listen()
+    assistant = VoiceAssistant()
 
-print(text)
+    assistant.start()

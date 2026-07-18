@@ -1,6 +1,5 @@
 from core.brain.agent_brain import AgentBrain
 
-
 laya = AgentBrain()
 
 
@@ -16,45 +15,22 @@ print("""
 
 while True:
 
+    user = input("\nYou: ")
 
-    user = input(
-        "\nYou: "
-    )
+    if user.lower() in ["exit", "quit"]:
 
-
-    if user.lower() in [
-        "exit",
-        "quit"
-    ]:
-
-        print(
-            "Laya shutting down..."
-        )
+        print("Laya shutting down...")
 
         break
 
-
-
     # remove You: if typed accidentally
 
-    if user.lower().startswith(
-        "you:"
-    ):
+    if user.lower().startswith("you:"):
 
         user = user[4:].strip()
 
+    result = laya.think(user)
 
+    print("\nLaya:")
 
-    result = laya.think(
-        user
-    )
-
-
-    print(
-        "\nLaya:"
-    )
-
-
-    print(
-        result
-    )
+    print(result)

@@ -12,39 +12,11 @@ class AppMatcher:
         query = query.lower().strip()
 
         aliases = {
-
-            "browser": [
-                "google chrome",
-                "chrome",
-                "brave",
-                "edge",
-                "firefox"
-            ],
-
-            "editor": [
-                "visual studio code",
-                "vscode",
-                "code",
-                "pycharm",
-                "notepad++"
-            ],
-
-            "music": [
-                "spotify",
-                "itunes",
-                "vlc"
-            ],
-
-            "video": [
-                "vlc",
-                "movies & tv"
-            ],
-
-            "terminal": [
-                "windows terminal",
-                "cmd",
-                "powershell"
-            ]
+            "browser": ["google chrome", "chrome", "brave", "edge", "firefox"],
+            "editor": ["visual studio code", "vscode", "code", "pycharm", "notepad++"],
+            "music": ["spotify", "itunes", "vlc"],
+            "video": ["vlc", "movies & tv"],
+            "terminal": ["windows terminal", "cmd", "powershell"],
         }
 
         for category in aliases:

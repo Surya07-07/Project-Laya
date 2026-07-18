@@ -1,11 +1,6 @@
 class ContextEngine:
 
-    def build(
-        self,
-        history,
-        memories,
-        user_message
-    ):
+    def build(self, history, memories, user_message):
 
         prompt = ""
 

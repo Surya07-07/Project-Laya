@@ -2,16 +2,7 @@ from pprint import pprint
 
 from core.agent.goal import Goal
 
-
-goal = Goal(
-
-    title="Continue Project Laya",
-
-    goal_type="development",
-
-    priority="high"
-
-)
+goal = Goal(title="Continue Project Laya", goal_type="development", priority="high")
 
 goal.add_task("Open VS Code")
 

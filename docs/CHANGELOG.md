@@ -1,32 +1,21 @@
-# Project Laya
+# CHANGELOG
 
-## Version 0.5.0
-
-### Added
-
+## v0.1
+- DNA
 - Runtime
-- AI Core
-- Ollama Integration
-- Prompt Builder
-- Memory Database
-- Emotion Engine
-- Plugin Manager
-- Skill Manager
-- Gateway
+
+## v0.2
+- Memory
 - Guardian
-- Heart
-- Service Container
 
-### Improved
+## v0.3
+- Plugins
+- Skills
 
-- Runtime stability
-- Conversation history
-- Memory integration
-- Emotion support
+## v0.4
+- Whisper
+- Piper
+- WakeWord
 
-### Fixed
-
-- Runtime indentation issues
-- Prompt builder signature mismatch
-- Conversation history methods
-- Ollama connection debugging
+## v0.5
+- Agent Foundation

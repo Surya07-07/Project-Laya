@@ -7,7 +7,7 @@ tests = [
     "I feel sad",
     "I am stressed about exams",
     "I am angry",
-    "I am excited"
+    "I am excited",
 ]
 
 for text in tests:

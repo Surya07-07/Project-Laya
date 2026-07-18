@@ -11,17 +11,9 @@ class AppDatabase:
         self.apps = {}
 
         self.locations = [
-
             r"C:\ProgramData\Microsoft\Windows\Start Menu\Programs",
-
-            os.path.expandvars(
-                r"%APPDATA%\Microsoft\Windows\Start Menu\Programs"
-            ),
-
-            os.path.join(
-                os.path.expanduser("~"),
-                "Desktop"
-            )
+            os.path.expandvars(r"%APPDATA%\Microsoft\Windows\Start Menu\Programs"),
+            os.path.join(os.path.expanduser("~"), "Desktop"),
         ]
 
     def scan(self):
@@ -49,17 +41,9 @@ class AppDatabase:
 
         os.makedirs("data", exist_ok=True)
 
-        with open(
-            "data/apps.json",
-            "w",
-            encoding="utf-8"
-        ) as f:
+        with open("data/apps.json", "w", encoding="utf-8") as f:
 
-            json.dump(
-                self.apps,
-                f,
-                indent=4
-            )
+            json.dump(self.apps, f, indent=4)
 
     def load(self):
 
@@ -67,11 +51,7 @@ class AppDatabase:
 
             return {}
 
-        with open(
-            "data/apps.json",
-            "r",
-            encoding="utf-8"
-        ) as f:
+        with open("data/apps.json", "r", encoding="utf-8") as f:
 
             self.apps = json.load(f)
 

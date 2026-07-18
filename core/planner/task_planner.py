@@ -1,5 +1,5 @@
-from core.planner.task_parser import TaskParser
 from core.planner.task_executor import TaskExecutor
+from core.planner.task_parser import TaskParser
 
 
 class TaskPlanner:
@@ -18,8 +18,6 @@ class TaskPlanner:
 
         for task in tasks:
 
-            results.append(
-                self.executor.execute(task)
-            )
+            results.append(self.executor.execute(task))
 
         return results

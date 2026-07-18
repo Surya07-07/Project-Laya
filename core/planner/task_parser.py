@@ -23,12 +23,7 @@ class TaskParser:
 
                 previous_action = "open"
 
-                tasks.append(
-                    Task(
-                        "open",
-                        part.replace("open ", "").strip()
-                    )
-                )
+                tasks.append(Task("open", part.replace("open ", "").strip()))
 
                 continue
 
@@ -36,12 +31,7 @@ class TaskParser:
 
                 previous_action = "open"
 
-                tasks.append(
-                    Task(
-                        "open",
-                        part.replace("launch ", "").strip()
-                    )
-                )
+                tasks.append(Task("open", part.replace("launch ", "").strip()))
 
                 continue
 
@@ -49,12 +39,7 @@ class TaskParser:
 
                 previous_action = "google"
 
-                tasks.append(
-                    Task(
-                        "google",
-                        part.replace("search google for ", "")
-                    )
-                )
+                tasks.append(Task("google", part.replace("search google for ", "")))
 
                 continue
 
@@ -62,22 +47,12 @@ class TaskParser:
 
                 previous_action = "youtube"
 
-                tasks.append(
-                    Task(
-                        "youtube",
-                        part.replace("search youtube for ", "")
-                    )
-                )
+                tasks.append(Task("youtube", part.replace("search youtube for ", "")))
 
                 continue
 
             if previous_action == "open":
 
-                tasks.append(
-                    Task(
-                        "open",
-                        part
-                    )
-                )
+                tasks.append(Task("open", part))
 
         return tasks

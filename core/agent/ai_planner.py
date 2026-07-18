@@ -44,16 +44,4 @@ User Request:
 
         except Exception:
 
-            return {
-
-                "goal": command,
-
-                "priority": "normal",
-
-                "tasks": [
-
-                    command
-
-                ]
-
-            }
+            return {"goal": command, "priority": "normal", "tasks": [command]}

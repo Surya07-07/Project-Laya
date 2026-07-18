@@ -13,10 +13,4 @@ class NetworkManager:
         except Exception:
             ip = "Unknown"
 
-        return {
-
-            "hostname": hostname,
-
-            "ip": ip
-
-        }
+        return {"hostname": hostname, "ip": ip}

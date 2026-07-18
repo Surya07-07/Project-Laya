@@ -6,10 +6,7 @@ class ConversationContext:
 
     def add(self, role, text):
 
-        self.items.append({
-            "role": role,
-            "text": text
-        })
+        self.items.append({"role": role, "text": text})
 
     def last(self, count=10):
 

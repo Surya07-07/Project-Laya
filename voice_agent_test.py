@@ -1,12 +1,9 @@
 from core.voice.agent_bridge import VoiceAgentBridge
 from core.voice.speech_recognizer import SpeechRecognizer
 
-
-
 laya = VoiceAgentBridge()
 
 speech = SpeechRecognizer()
-
 
 
 print("""
@@ -21,40 +18,20 @@ print("""
 
 while True:
 
-
     text = speech.transcribe()
-
 
     if not text:
 
         continue
 
+    print("\n🎤 Heard:", text)
 
-
-    print(
-        "\n🎤 Heard:",
-        text
-    )
-
-
-    if text.lower() in [
-        "exit",
-        "quit"
-    ]:
+    if text.lower() in ["exit", "quit"]:
 
         break
 
+    result = laya.process_voice(text)
 
+    print("\nLaya:")
 
-    result = laya.process_voice(
-        text
-    )
-
-
-    print(
-        "\nLaya:"
-    )
-
-    print(
-        result
-    )
+    print(result)

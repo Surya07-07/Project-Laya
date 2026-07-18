@@ -8,11 +8,7 @@ class Config:
 
         with open(config_file, "r", encoding="utf-8") as file:
             self.data = json.load(file)
-            {
-        "ai": {
-    "provider": "ollama",
-    "model": "llama3.2:3b" }
-}
+            {"ai": {"provider": "ollama", "model": "llama3.2:3b"}}
 
     def get(self, *keys):
         value = self.data

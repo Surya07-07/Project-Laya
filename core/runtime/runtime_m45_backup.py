@@ -1,6 +1,8 @@
 from app.config import Config
 from app.logger import Logger
+from core.aicore.core import AICore
 from core.brain.processor import CommandProcessor
+from core.conversation.history import ConversationHistory
 from core.dna.dna import DNA
 from core.gateway.gateway import Gateway
 from core.guardian.guardian import Guardian
@@ -8,11 +10,10 @@ from core.heart.heart import Heart
 from core.memory.memory import Memory
 from core.plugins.plugin_manager import PluginManager
 from core.router.router import TaskRouter
-from plugins.calculator.plugin import CalculatorPlugin
-from core.aicore.core import AICore
 from core.skills.manager import SkillManager
+from plugins.calculator.plugin import CalculatorPlugin
 from skills.calculator.skill import CalculatorSkill
-from core.conversation.history import ConversationHistory
+
 
 class LayaRuntime:
 
@@ -30,22 +31,14 @@ class LayaRuntime:
 
         # Plugin Manager
         self.plugins = PluginManager()
-        self.plugins.register(
-            "calculator",
-            CalculatorPlugin()
-        )
+        self.plugins.register("calculator", CalculatorPlugin())
 
         # Skill Manager
         self.skill_manager = SkillManager()
-        self.skill_manager.register(
-            CalculatorSkill()
-        )
+        self.skill_manager.register(CalculatorSkill())
 
         # Router
-        self.router = TaskRouter(
-            None,
-            self.plugins
-        )
+        self.router = TaskRouter(None, self.plugins)
 
         # AI Core
         self.ai_core = AICore(
@@ -54,15 +47,11 @@ class LayaRuntime:
             gateway=self.gateway,
             heart=self.heart,
             guardian=self.guardian,
-            skill_manager=self.skill_manager
+            skill_manager=self.skill_manager,
         )
 
         # Brain
-        self.brain = CommandProcessor(
-            self.memory,
-            self.heart,
-            self.ai_core
-        )
+        self.brain = CommandProcessor(self.memory, self.heart, self.ai_core)
 
         # Connect router to brain
         self.router.brain = self.brain
@@ -122,19 +111,13 @@ class LayaRuntime:
 
                 break
 
-            self.gateway.history.add(
-    "User",
-    user
-)
+            self.gateway.history.add("User", user)
 
             self.memory.learn(user)
 
         response = self.ai_core.process(user)
 
-        self.gateway.history.add(
-    "Laya",
-    response
-)
+        self.gateway.history.add("Laya", response)
 
         Logger.info(f"LAYA : {response}")
 

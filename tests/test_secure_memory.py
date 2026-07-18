@@ -1,19 +1,13 @@
 from core.memory.service import MemoryService
 
-
 memory = MemoryService()
 
 
 tests = [
-
     "My name is Surya",
-
     "I prefer Python",
-
     "My password is 12345",
-
-    "My favorite movie is Interstellar"
-
+    "My favorite movie is Interstellar",
 ]
 
 

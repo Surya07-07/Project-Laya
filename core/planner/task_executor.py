@@ -1,5 +1,5 @@
-from core.device.app_database import AppDatabase
 from core.desktop.controller import DesktopController
+from core.device.app_database import AppDatabase
 
 
 class TaskExecutor:

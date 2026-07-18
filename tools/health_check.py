@@ -6,10 +6,7 @@ print("=" * 50)
 
 print()
 
-success = compileall.compile_dir(
-    ".",
-    quiet=1
-)
+success = compileall.compile_dir(".", quiet=1)
 
 if success:
     print("✓ All Python files compiled.")

@@ -43,10 +43,4 @@ class VoiceSession:
 
             return 0
 
-        return max(
-            0,
-            int(
-                self.timeout -
-                (time.time() - self.last_activity)
-            )
-        )
+        return max(0, int(self.timeout - (time.time() - self.last_activity)))

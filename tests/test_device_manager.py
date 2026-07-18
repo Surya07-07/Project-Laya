@@ -1,4 +1,5 @@
 from pprint import pprint
+
 from core.device.device_manager import DeviceManager
 
 device = DeviceManager()

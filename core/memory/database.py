@@ -1,31 +1,22 @@
 import sqlite3
 from datetime import datetime
 
-
 from core.security.encryption import EncryptionManager
-
 
 
 class Database:
 
-
     def __init__(self):
 
-        self.connection = sqlite3.connect(
-            "data/memory.db",
-            check_same_thread=False
-        )
+        self.connection = sqlite3.connect("data/memory.db", check_same_thread=False)
 
         self.cursor = self.connection.cursor()
 
         self.encryption = EncryptionManager()
 
-
-
     def initialize(self):
 
-        self.cursor.execute(
-            """
+        self.cursor.execute("""
             CREATE TABLE IF NOT EXISTS memories(
 
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -45,30 +36,17 @@ class Database:
                 expires_at TEXT
 
             )
-            """
-        )
+            """)
 
         self.connection.commit()
 
-
-
-    def save(
-        self,
-        key,
-        value,
-        memory_type,
-        importance
-    ):
-
+    def save(self, key, value, memory_type, importance):
 
         encrypted_value = self.encryption.encrypt(value)
 
-
         existing = self.get(key)
 
-
         if existing is not None:
-
 
             self.cursor.execute(
                 """
@@ -81,19 +59,16 @@ class Database:
 
                 WHERE key=?
                 """,
-
                 (
                     encrypted_value,
                     memory_type,
                     importance,
                     datetime.now().isoformat(),
-                    key
-                )
+                    key,
+                ),
             )
 
-
         else:
-
 
             self.cursor.execute(
                 """
@@ -110,26 +85,19 @@ class Database:
                 VALUES (?, ?, ?, ?, ?, ?)
 
                 """,
-
                 (
-
                     key,
                     encrypted_value,
                     memory_type,
                     importance,
                     datetime.now().isoformat(),
-                    datetime.now().isoformat()
-
-                )
+                    datetime.now().isoformat(),
+                ),
             )
-
 
         self.connection.commit()
 
-
-
     def get(self, key):
-
 
         self.cursor.execute(
             """
@@ -137,32 +105,20 @@ class Database:
             FROM memories
             WHERE key=?
             """,
-
-            (key,)
-
+            (key,),
         )
-
 
         row = self.cursor.fetchone()
 
-
         if row:
 
-
-            return self.encryption.decrypt(
-                row[0]
-            )
-
+            return self.encryption.decrypt(row[0])
 
         return None
 
-
-
     def get_all(self):
 
-
-        self.cursor.execute(
-            """
+        self.cursor.execute("""
             SELECT
             key,
             value,
@@ -173,60 +129,37 @@ class Database:
 
             FROM memories
 
-            """
-        )
-
+            """)
 
         rows = self.cursor.fetchall()
 
-
         result = []
-
 
         for row in rows:
 
-
             result.append(
-
                 (
-
                     row[0],
-
                     self.encryption.decrypt(row[1]),
-
                     row[2],
-
                     row[3],
-
                     row[4],
-
-                    row[5]
-
+                    row[5],
                 )
-
             )
-
 
         return result
 
-
-
-    def delete(self,key):
-
+    def delete(self, key):
 
         self.cursor.execute(
-
             """
             DELETE FROM memories
             WHERE key=?
             """,
-
-            (key,)
-
+            (key,),
         )
 
-
         self.connection.commit()
-
 
         return True

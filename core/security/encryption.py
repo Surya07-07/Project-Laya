@@ -1,9 +1,9 @@
-from cryptography.fernet import Fernet, InvalidToken
 import os
+
+from cryptography.fernet import Fernet, InvalidToken
 
 
 class EncryptionManager:
-
 
     def __init__(self):
 
@@ -12,8 +12,6 @@ class EncryptionManager:
         self.key = self.load_key()
 
         self.cipher = Fernet(self.key)
-
-
 
     def load_key(self):
 
@@ -26,29 +24,19 @@ class EncryptionManager:
 
             return key
 
-
         with open(self.key_file, "rb") as file:
 
             return file.read()
 
-
-
     def encrypt(self, text):
 
-        return self.cipher.encrypt(
-            text.encode()
-        ).decode()
-
-
+        return self.cipher.encrypt(text.encode()).decode()
 
     def decrypt(self, text):
 
         try:
 
-            return self.cipher.decrypt(
-                text.encode()
-            ).decode()
-
+            return self.cipher.decrypt(text.encode()).decode()
 
         except InvalidToken:
 

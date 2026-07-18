@@ -1,7 +1,7 @@
-from core.device.system_info import SystemInfo
-from core.device.storage import StorageManager
-from core.device.network import NetworkManager
 from core.device.app_database import AppDatabase
+from core.device.network import NetworkManager
+from core.device.storage import StorageManager
+from core.device.system_info import SystemInfo
 
 
 class DeviceManager:
@@ -29,13 +29,8 @@ class DeviceManager:
     def summary(self):
 
         return {
-
             "system": self.system.info(),
-
             "network": self.network.info(),
-
             "drives": self.storage.drives(),
-
-            "applications": len(self.apps.load())
-
+            "applications": len(self.apps.load()),
         }

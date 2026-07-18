@@ -1,16 +1,14 @@
 from core.agent.executor import Executor
-from core.agent.learning import LearningMemory
-from core.cognition.intent import IntentDetector
-from core.agent.router import ActionRouter
 from core.agent.goal_manager import GoalManager
-from core.agent.verifier import PlanVerifier
+from core.agent.learning import LearningMemory
 from core.agent.retry_engine import RetryEngine
+from core.agent.router import ActionRouter
+from core.agent.verifier import PlanVerifier
+from core.cognition.intent import IntentDetector
 from core.memory.context import ContextManager
 
 
-
 class AgentController:
-
 
     def __init__(self):
 
@@ -30,148 +28,51 @@ class AgentController:
 
         self.context = ContextManager()
 
-
-
     def process(self, request):
-
 
         print("\n🧠 Detecting intent...")
 
+        intent_result = self.intent.detect(request)
 
-        intent_result = self.intent.detect(
-            request
-        )
+        tool = self.router.route(intent_result["intent"])
 
+        print("Intent:", intent_result)
 
-        tool = self.router.route(
-            intent_result["intent"]
-        )
+        print("Tool:", tool)
 
+        print("\n📌 Previous Context:")
 
-        print(
-            "Intent:",
-            intent_result
-        )
+        print(self.context.get())
 
-
-        print(
-            "Tool:",
-            tool
-        )
-
-
-
-        print(
-            "\n📌 Previous Context:"
-        )
-
-        print(
-            self.context.get()
-        )
-
-
-
-        goal = self.goal.create_goal(
-
-            request,
-
-            [
-
-                {
-
-                    "tool": tool,
-
-                    "data": request
-
-                }
-
-            ]
-
-        )
-
-
+        goal = self.goal.create_goal(request, [{"tool": tool, "data": request}])
 
         results = []
 
-
-
-        print(
-            "\n⚙️ Executing..."
-        )
-
+        print("\n⚙️ Executing...")
 
         while True:
 
-
             step = self.goal.next_step()
-
 
             if step is None:
 
                 break
 
-
-
             retry_result = self.retry.run(
-
-                self.executor.execute,
-
-                step["tool"],
-
-                step["data"]
-
+                self.executor.execute, step["tool"], step["data"]
             )
 
+            verification = self.verifier.verify(retry_result["result"])
 
-            verification = self.verifier.verify(
+            results.append({"retry": retry_result, "verification": verification})
 
-                retry_result["result"]
+            self.context.update(request, tool, retry_result)
 
-            )
-
-
-            results.append({
-
-                "retry": retry_result,
-
-                "verification": verification
-
-            })
-
-
-
-            self.context.update(
-
-                request,
-
-                tool,
-
-                retry_result
-
-            )
-
-
-
-        memory = self.memory.save_success(
-
-            request,
-
-            intent_result["intent"],
-
-            results
-
-        )
-
-
+        memory = self.memory.save_success(request, intent_result["intent"], results)
 
         return {
-
             "goal": goal,
-
             "context": self.context.get(),
-
             "results": results,
-
-            "memory": memory
-
+            "memory": memory,
         }

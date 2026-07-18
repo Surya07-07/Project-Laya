@@ -1,15 +1,22 @@
+import time
+
 from core.voice.microphone import Microphone
 
 mic = Microphone()
 
 mic.start()
 
-audio = mic.record(3)
+print("Speak something...")
 
-print()
 
-print("Shape :", audio.shape)
+for i in range(50):
 
-print("Samples :", len(audio))
+    audio = mic.read()
+
+    if audio is not None:
+        print("Audio captured:", len(audio))
+
+    time.sleep(0.1)
+
 
 mic.stop()

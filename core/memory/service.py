@@ -1,12 +1,10 @@
-from core.memory.database import Database
-from core.memory.ranker import MemoryRanker
-from core.memory.extractor import MemoryExtractor
-from core.memory.semantic import SemanticMemory
-
 from core.guardian.guardian import Guardian
-
-from core.memory.privacy.permission import MemoryPermission
+from core.memory.database import Database
+from core.memory.extractor import MemoryExtractor
 from core.memory.privacy.audit import MemoryAudit
+from core.memory.privacy.permission import MemoryPermission
+from core.memory.ranker import MemoryRanker
+from core.memory.semantic import SemanticMemory
 
 
 class MemoryService:
@@ -35,10 +33,7 @@ class MemoryService:
 
         if not security["allowed"]:
 
-            return {
-                "status": "blocked",
-                "reason": security["reason"]
-            }
+            return {"status": "blocked", "reason": security["reason"]}
 
         approval = self.permission.check(text)
 
@@ -47,28 +42,20 @@ class MemoryService:
             return {
                 "status": "permission_required",
                 "reason": approval["reason"],
-                "data": text
+                "data": text,
             }
 
         decision = self.ranker.rank(text)
 
-        self.db.save(
-            key,
-            value,
-            decision["type"].value,
-            decision["score"]
-        )
+        self.db.save(key, value, decision["type"].value, decision["score"])
 
-        self.audit.write(
-            "SAVE",
-            key
-        )
+        self.audit.write("SAVE", key)
 
         return {
             "status": "saved",
             "key": key,
             "type": decision["type"].value,
-            "score": decision["score"]
+            "score": decision["score"],
         }
 
     def remember_sentence(self, sentence):
@@ -77,17 +64,11 @@ class MemoryService:
 
         if memory is None:
 
-            return {
-                "status": "ignored",
-                "reason": "No memory detected"
-            }
+            return {"status": "ignored", "reason": "No memory detected"}
 
         key, value = memory
 
-        return self.remember(
-            key,
-            value
-        )
+        return self.remember(key, value)
 
     def approve_memory(self):
 
@@ -95,32 +76,19 @@ class MemoryService:
 
         if pending is None:
 
-            return {
-                "status": "no_pending_memory"
-            }
+            return {"status": "no_pending_memory"}
 
-        self.audit.write(
-            "APPROVED",
-            pending
-        )
+        self.audit.write("APPROVED", pending)
 
-        return {
-            "status": "approved",
-            "memory": pending
-        }
+        return {"status": "approved", "memory": pending}
 
     def reject_memory(self):
 
         self.permission.reject()
 
-        self.audit.write(
-            "REJECTED",
-            "pending"
-        )
+        self.audit.write("REJECTED", "pending")
 
-        return {
-            "status": "rejected"
-        }
+        return {"status": "rejected"}
 
     def recall(self, key):
 
@@ -136,19 +104,10 @@ class MemoryService:
 
         if exists is None:
 
-            return {
-                "status": "not_found",
-                "key": key
-            }
+            return {"status": "not_found", "key": key}
 
         self.db.delete(key)
 
-        self.audit.write(
-            "DELETE",
-            key
-        )
+        self.audit.write("DELETE", key)
 
-        return {
-            "status": "deleted",
-            "key": key
-        }
+        return {"status": "deleted", "key": key}

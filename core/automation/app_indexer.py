@@ -11,12 +11,8 @@ class AppIndexer:
     def scan(self):
 
         locations = [
-
             r"C:\ProgramData\Microsoft\Windows\Start Menu\Programs",
-
-            os.path.expandvars(
-                r"%APPDATA%\Microsoft\Windows\Start Menu\Programs"
-            )
+            os.path.expandvars(r"%APPDATA%\Microsoft\Windows\Start Menu\Programs"),
         ]
 
         self.apps.clear()

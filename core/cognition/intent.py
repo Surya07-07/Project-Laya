@@ -1,65 +1,25 @@
 class IntentDetector:
 
-
     def __init__(self):
 
         self.intents = {
-
-            "create_folder":[
-                "create folder",
-                "make folder",
-                "new folder"
-            ],
-
-            "open_application":[
-                "open",
-                "launch",
-                "start"
-            ],
-
-            "type_text":[
-                "type",
-                "write"
-            ],
-
-            "press_key":[
-                "press",
-                "hit key"
-            ],
-
-            "memory_save":[
-                "remember",
-                "save this"
-            ]
-
+            "create_folder": ["create folder", "make folder", "new folder"],
+            "open_application": ["open", "launch", "start"],
+            "type_text": ["type", "write"],
+            "press_key": ["press", "hit key"],
+            "memory_save": ["remember", "save this"],
         }
 
+    def detect(self, text):
 
+        text = text.lower().strip()
 
-    def detect(self,text):
-
-        text=text.lower().strip()
-
-
-        for intent,words in self.intents.items():
+        for intent, words in self.intents.items():
 
             for word in words:
 
                 if word in text:
 
-                    return {
+                    return {"intent": intent, "confidence": 0.9}
 
-                        "intent":intent,
-
-                        "confidence":0.9
-
-                    }
-
-
-        return {
-
-            "intent":"unknown",
-
-            "confidence":0
-
-        }
+        return {"intent": "unknown", "confidence": 0}

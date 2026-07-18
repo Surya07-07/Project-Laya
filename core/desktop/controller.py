@@ -1,6 +1,7 @@
 import os
-import webbrowser
 import subprocess
+import webbrowser
+
 import pyautogui
 
 
@@ -13,7 +14,7 @@ class DesktopController:
             "downloads": os.path.join(os.path.expanduser("~"), "Downloads"),
             "documents": os.path.join(os.path.expanduser("~"), "Documents"),
             "pictures": os.path.join(os.path.expanduser("~"), "Pictures"),
-            "videos": os.path.join(os.path.expanduser("~"), "Videos")
+            "videos": os.path.join(os.path.expanduser("~"), "Videos"),
         }
 
         folder = folder.lower()
@@ -28,15 +29,11 @@ class DesktopController:
 
     def search_google(self, query):
 
-        webbrowser.open(
-            "https://www.google.com/search?q=" + query
-        )
+        webbrowser.open("https://www.google.com/search?q=" + query)
 
     def search_youtube(self, query):
 
-        webbrowser.open(
-            "https://www.youtube.com/results?search_query=" + query
-        )
+        webbrowser.open("https://www.youtube.com/results?search_query=" + query)
 
     def open_github(self):
 
@@ -52,6 +49,4 @@ class DesktopController:
 
     def lock_pc(self):
 
-        subprocess.run(
-            "rundll32.exe user32.dll,LockWorkStation"
-        )
+        subprocess.run("rundll32.exe user32.dll,LockWorkStation")

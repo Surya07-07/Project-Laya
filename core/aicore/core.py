@@ -1,19 +1,11 @@
-from core.ai.service import AIService
 from core.ai.prompt_builder import PromptBuilder
+from core.ai.service import AIService
 from core.intent.router import IntentRouter
 
 
 class AICore:
 
-    def __init__(
-        self,
-        router,
-        memory,
-        gateway,
-        heart,
-        guardian,
-        skill_manager
-    ):
+    def __init__(self, router, memory, gateway, heart, guardian, skill_manager):
 
         self.router = router
         self.memory = memory
@@ -49,10 +41,6 @@ class AICore:
         # ---------- AI ----------
         emotion = self.gateway.history.last_emotion()
 
-        prompt = self.prompt_builder.build(
-    self.gateway.history,
-    command,
-    emotion
-)
+        prompt = self.prompt_builder.build(self.gateway.history, command, emotion)
 
         return self.ai.ask(prompt)

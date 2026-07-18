@@ -1,27 +1,21 @@
 from app.config import Config
 from app.logger import Logger
-
+from core.aicore.core import AICore
+from core.brain.processor import CommandProcessor
 from core.container.container import ServiceContainer
-
+from core.conversation.history import ConversationHistory
 from core.dna.dna import DNA
+from core.gateway.gateway import Gateway
 from core.guardian.guardian import Guardian
 from core.heart.heart import Heart
 from core.memory.memory import Memory
-from core.gateway.gateway import Gateway
-
 from core.plugins.plugin_manager import PluginManager
-from plugins.calculator.plugin import CalculatorPlugin
-
-from core.skills.manager import SkillManager
-from skills.calculator.skill import CalculatorSkill
-
 from core.router.router import TaskRouter
-from core.brain.processor import CommandProcessor
-from core.aicore.core import AICore
-
-from core.conversation.history import ConversationHistory
+from core.skills.manager import SkillManager
 from core.system.startup import StartupManager
 from core.voice.wakeword import WakeWord
+from plugins.calculator.plugin import CalculatorPlugin
+from skills.calculator.skill import CalculatorSkill
 
 
 class LayaRuntime:
@@ -53,18 +47,13 @@ class LayaRuntime:
             self.memory = Memory()
             self.gateway = Gateway()
 
-
         # ------------------------------
         # Plugins
         # ------------------------------
 
         self.plugins = PluginManager()
 
-        self.plugins.register(
-            "calculator",
-            CalculatorPlugin()
-        )
-
+        self.plugins.register("calculator", CalculatorPlugin())
 
         # ------------------------------
         # Skills
@@ -72,20 +61,13 @@ class LayaRuntime:
 
         self.skill_manager = SkillManager()
 
-        self.skill_manager.register(
-            CalculatorSkill()
-        )
-
+        self.skill_manager.register(CalculatorSkill())
 
         # ------------------------------
         # Router
         # ------------------------------
 
-        self.router = TaskRouter(
-            None,
-            self.plugins
-        )
-
+        self.router = TaskRouter(None, self.plugins)
 
         # ------------------------------
         # AI Core
@@ -97,29 +79,22 @@ class LayaRuntime:
             gateway=self.gateway,
             heart=self.heart,
             guardian=self.guardian,
-            skill_manager=self.skill_manager
+            skill_manager=self.skill_manager,
         )
-
 
         # ------------------------------
         # Brain
         # ------------------------------
 
-        self.brain = CommandProcessor(
-            self.memory,
-            self.heart,
-            self.ai_core
-        )
+        self.brain = CommandProcessor(self.memory, self.heart, self.ai_core)
 
         self.router.brain = self.brain
-
 
         # ------------------------------
         # Conversation
         # ------------------------------
 
         self.history = ConversationHistory()
-
 
         # ------------------------------
         # Voice System
@@ -129,12 +104,9 @@ class LayaRuntime:
 
         self.voice = WakeWord()
 
-
-
     def start(self):
 
         Logger.info("Starting Runtime")
-
 
         print("=" * 60)
         print("                PROJECT IGRIS")
@@ -143,48 +115,30 @@ class LayaRuntime:
 
         print()
 
+        print("Assistant :", self.config.get("assistant", "name"))
 
-        print(
-            "Assistant :",
-            self.config.get("assistant", "name")
-        )
+        print("Version   :", self.config.get("assistant", "version"))
 
-        print(
-            "Version   :",
-            self.config.get("assistant", "version")
-        )
-
-        print(
-            "AI Model  :",
-            self.config.get("ai", "model")
-        )
-
+        print("AI Model  :", self.config.get("ai", "model"))
 
         # Start Ollama automatically
 
         self.startup.initialize()
 
-
-
         self.dna.load()
         Logger.info("DNA Loaded")
-
 
         self.guardian.load()
         Logger.info("Guardian Loaded")
 
-
         self.heart.load()
         Logger.info("Heart Loaded")
-
 
         self.memory.load()
         Logger.info("Memory Loaded")
 
-
         self.gateway.load()
         Logger.info("Gateway Loaded")
-
 
         print()
 
@@ -203,14 +157,9 @@ class LayaRuntime:
         print("🎤 Wake word listener ready")
         print("Say 'Hey Laya' to activate")
 
-
-
     def chat(self):
 
-        print(
-            "Waiting for Hey Laya...\n"
-        )
-
+        print("Waiting for Hey Laya...\n")
 
         while True:
 
@@ -220,101 +169,46 @@ class LayaRuntime:
 
                 activated = self.voice.listen()
 
-
                 if not activated:
 
                     continue
 
+                print("🎤 Laya Activated")
 
-                print(
-                    "🎤 Laya Activated"
-                )
-
-
-                user = input(
-                    "You : "
-                ).strip()
-
-
+                user = input("You : ").strip()
 
                 if not user:
 
                     continue
 
-
-
                 if user.lower() == "exit":
 
-                    Logger.info(
-                        "Runtime Closed"
-                    )
+                    Logger.info("Runtime Closed")
 
-                    print(
-                        "Laya : Goodbye!"
-                    )
+                    print("Laya : Goodbye!")
 
                     break
 
+                Logger.info(f"USER : {user}")
 
+                self.history.add("User", user)
 
-                Logger.info(
-                    f"USER : {user}"
-                )
+                emotion = self.emotion.update(user)
 
+                self.gateway.history.set_emotion(emotion.value)
 
-                self.history.add(
-                    "User",
-                    user
-                )
+                print(f"😊 Emotion: {emotion.value}")
 
+                response = self.ai_core.process(user)
 
-                emotion = self.emotion.update(
-                    user
-                )
+                self.history.add("Laya", response)
 
+                Logger.info(f"LAYA : {response}")
 
-                self.gateway.history.set_emotion(
-                    emotion.value
-                )
-
-
-                print(
-                    f"😊 Emotion: {emotion.value}"
-                )
-
-
-                response = self.ai_core.process(
-                    user
-                )
-
-
-                self.history.add(
-                    "Laya",
-                    response
-                )
-
-
-                Logger.info(
-                    f"LAYA : {response}"
-                )
-
-
-                print(
-                    "Laya :",
-                    response
-                )
-
-
+                print("Laya :", response)
 
             except Exception as e:
 
+                Logger.error(str(e))
 
-                Logger.error(
-                    str(e)
-                )
-
-
-                print(
-                    "Laya Error:",
-                    e
-                )
+                print("Laya Error:", e)

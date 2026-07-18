@@ -67,15 +67,7 @@ if db_exists:
 # Directories
 # ---------------------------------
 
-folders = [
-    "logs",
-    "data",
-    "settings",
-    "core",
-    "plugins",
-    "skills",
-    "tests"
-]
+folders = ["logs", "data", "settings", "core", "plugins", "skills", "tests"]
 
 for folder in folders:
 
@@ -88,10 +80,7 @@ for folder in folders:
 
 try:
 
-    urllib.request.urlopen(
-        "http://127.0.0.1:11434/api/version",
-        timeout=2
-    )
+    urllib.request.urlopen("http://127.0.0.1:11434/api/version", timeout=2)
 
     check("Ollama Server", True)
 
@@ -133,4 +122,3 @@ if failed == 0:
     print("\n🎉 Laya is healthy.")
 else:
     print("\n⚠ Some checks failed.")
-

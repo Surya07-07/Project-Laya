@@ -9,7 +9,7 @@ class MemoryClassifier:
             "i am",
             "remember my",
             "my birthday",
-            "my preference"
+            "my preference",
         ]
 
         self.important_keywords = [
@@ -17,9 +17,8 @@ class MemoryClassifier:
             "i prefer",
             "my project",
             "my work",
-            "my study"
+            "my study",
         ]
-
 
     def classify(self, text):
 
@@ -28,23 +27,12 @@ class MemoryClassifier:
         # Permanent memory
         for keyword in self.permanent_keywords:
             if keyword in text_lower:
-                return {
-                    "category": "permanent",
-                    "score": 95
-                }
-
+                return {"category": "permanent", "score": 95}
 
         # Important memory
         for keyword in self.important_keywords:
             if keyword in text_lower:
-                return {
-                    "category": "important",
-                    "score": 60
-                }
-
+                return {"category": "important", "score": 60}
 
         # Temporary memory
-        return {
-            "category": "temporary",
-            "score": 20
-        }
+        return {"category": "temporary", "score": 20}

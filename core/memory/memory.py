@@ -1,9 +1,8 @@
 from core.memory.database import Database
+from core.memory.extractor import MemoryExtractor
 from core.memory.ranker import MemoryRanker
-from core.memory.types import MemoryType
 from core.memory.semantic import SemanticMemory
-from core.memory.extractor import MemoryExtractor
-from core.memory.extractor import MemoryExtractor
+from core.memory.types import MemoryType
 
 
 class Memory:
@@ -28,18 +27,13 @@ class Memory:
             print("⚪ Ignored Memory")
             return
 
-        importance = {
-            "permanent": 10,
-            "important": 8,
-            "temporary": 5,
-            "ignore": 0
-        }
+        importance = {"permanent": 10, "important": 8, "temporary": 5, "ignore": 0}
 
         self.database.save(
             key=key,
             value=value,
             memory_type=memory_type.value,
-            importance=importance[memory_type.value]
+            importance=importance[memory_type.value],
         )
 
         print(f"💾 Saved ({memory_type.value}): {key}")

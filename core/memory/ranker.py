@@ -7,7 +7,6 @@ class MemoryRanker:
 
         text = text.lower().strip()
 
-
         permanent = [
             "name",
             "my name",
@@ -21,9 +20,8 @@ class MemoryRanker:
             "college",
             "university",
             "home",
-            "hometown"
+            "hometown",
         ]
-
 
         important = [
             "exam",
@@ -32,51 +30,27 @@ class MemoryRanker:
             "deadline",
             "today",
             "tomorrow",
-            "project"
+            "project",
         ]
 
-
-        temporary = [
-            "remember this",
-            "note",
-            "current task"
-        ]
-
+        temporary = ["remember this", "note", "current task"]
 
         for word in permanent:
 
             if word in text:
 
-                return {
-                    "type": MemoryType.PERMANENT,
-                    "score": 95
-                }
-
-
+                return {"type": MemoryType.PERMANENT, "score": 95}
 
         for word in important:
 
             if word in text:
 
-                return {
-                    "type": MemoryType.IMPORTANT,
-                    "score": 60
-                }
-
-
+                return {"type": MemoryType.IMPORTANT, "score": 60}
 
         for word in temporary:
 
             if word in text:
 
-                return {
-                    "type": MemoryType.TEMPORARY,
-                    "score": 20
-                }
+                return {"type": MemoryType.TEMPORARY, "score": 20}
 
-
-
-        return {
-            "type": MemoryType.TEMPORARY,
-            "score": 10
-        }
+        return {"type": MemoryType.TEMPORARY, "score": 10}

@@ -7,11 +7,7 @@ class WhisperEngine:
 
         print("Loading Whisper Tiny Model...")
 
-        self.model = WhisperModel(
-            "tiny",
-            device="cpu",
-            compute_type="int8"
-        )
+        self.model = WhisperModel("tiny", device="cpu", compute_type="int8")
 
         print("✅ Whisper Ready")
 

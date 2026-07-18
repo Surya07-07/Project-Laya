@@ -1,6 +1,5 @@
 from core.security.encryption import EncryptionManager
 
-
 security = EncryptionManager()
 
 
@@ -14,9 +13,7 @@ print("Encrypted:")
 print(encrypted)
 
 
-decrypted = security.decrypt(
-    encrypted
-)
+decrypted = security.decrypt(encrypted)
 
 
 print("\nDecrypted:")

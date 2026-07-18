@@ -1,10 +1,6 @@
 import importlib
 
-packages = [
-    "ollama",
-    "sqlite3",
-    "requests"
-]
+packages = ["ollama", "sqlite3", "requests"]
 
 print("=" * 50)
 print("PROJECT LAYA ENVIRONMENT CHECK")

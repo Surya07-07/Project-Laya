@@ -15,7 +15,7 @@ class AudioRecorder:
         audio = sd.rec(
             int(seconds * self.sample_rate),
             samplerate=self.sample_rate,
-            channels=self.channels
+            channels=self.channels,
         )
 
         sd.wait()

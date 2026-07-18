@@ -1,43 +1,46 @@
+import time
+
+import numpy as np
+
 from core.voice.microphone import Microphone
-from core.speech.whisper_engine import WhisperEngine
-from core.language.manager import LanguageManager
+from core.voice.whisper import WhisperSTT
 
 mic = Microphone()
 
-engine = WhisperEngine()
+stt = WhisperSTT()
 
-lang = LanguageManager()
 
 mic.start()
 
-print()
-print("========================================")
-print("Speak in ANY language")
-print("English")
-print("తెలుగు")
-print("हिन्दी")
-print("தமிழ்")
-print("ಕನ್ನಡ")
-print("========================================")
-print()
 
-mic.record(5)
+print("Say something...")
 
-result = engine.transcribe("data/input.wav")
 
-lang.update(result["language"])
+time.sleep(3)
 
-print()
 
-print("Detected Code :", lang.code())
-print("Detected Name :", lang.name())
+audio = []
 
-print()
 
-print("Recognized Text")
+for i in range(50):
 
-print("----------------------------------------")
+    chunk = mic.read()
 
-print(result["text"])
+    if chunk is not None:
+        audio.extend(chunk)
+
 
 mic.stop()
+
+
+audio = np.array(audio)
+
+
+print("Transcribing...")
+
+
+text = stt.transcribe(audio)
+
+
+print("You said:")
+print(text)

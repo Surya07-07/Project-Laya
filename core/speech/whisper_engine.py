@@ -7,21 +7,13 @@ class WhisperEngine:
 
         print("🧠 Loading Faster-Whisper...")
 
-        self.model = WhisperModel(
-            "small",
-            device="cpu",
-            compute_type="int8"
-        )
+        self.model = WhisperModel("small", device="cpu", compute_type="int8")
 
         print("✅ Whisper Ready")
 
     def transcribe(self, audio_file):
 
-        segments, info = self.model.transcribe(
-            audio_file,
-            beam_size=5,
-            vad_filter=True
-        )
+        segments, info = self.model.transcribe(audio_file, beam_size=5, vad_filter=True)
 
         print()
         print("Detected Language :", info.language)
@@ -36,5 +28,5 @@ class WhisperEngine:
         return {
             "text": text.strip(),
             "language": info.language,
-            "confidence": info.language_probability
+            "confidence": info.language_probability,
         }

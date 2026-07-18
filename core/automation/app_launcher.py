@@ -8,7 +8,7 @@ class AppLauncher:
         "calculator": "calc.exe",
         "paint": "mspaint.exe",
         "cmd": "cmd.exe",
-        "explorer": "explorer.exe"
+        "explorer": "explorer.exe",
     }
 
     def open(self, app):

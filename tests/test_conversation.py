@@ -1,5 +1,5 @@
-from core.conversation.history import ConversationHistory
 from core.conversation.context import ContextBuilder
+from core.conversation.history import ConversationHistory
 
 history = ConversationHistory()
 

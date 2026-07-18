@@ -1,6 +1,5 @@
 class SafetyValidator:
 
-
     def __init__(self):
 
         self.high_risk = [
@@ -11,14 +10,12 @@ class SafetyValidator:
             "steal password",
             "access credential",
             "send money",
-            "bank transfer"
+            "bank transfer",
         ]
-
 
     def validate(self, goal):
 
         text = goal.description.lower()
-
 
         for action in self.high_risk:
 
@@ -27,12 +24,11 @@ class SafetyValidator:
                 return {
                     "allowed": False,
                     "reason": f"High risk action: {action}",
-                    "permission_required": True
+                    "permission_required": True,
                 }
-
 
         return {
             "allowed": True,
             "reason": "Plan approved",
-            "permission_required": False
+            "permission_required": False,
         }

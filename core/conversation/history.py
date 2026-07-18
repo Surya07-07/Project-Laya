@@ -7,12 +7,7 @@ class ConversationHistory:
 
     def add(self, role, message):
 
-        self.messages.append(
-            {
-                "role": role,
-                "message": message
-            }
-        )
+        self.messages.append({"role": role, "message": message})
 
     def last(self, count=10):
 

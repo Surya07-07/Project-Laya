@@ -3,12 +3,7 @@ from core.ai.service import AIService
 
 class Assistant:
 
-    def __init__(
-        self,
-        memory,
-        skills,
-        gateway
-    ):
+    def __init__(self, memory, skills, gateway):
 
         self.memory = memory
         self.skills = skills

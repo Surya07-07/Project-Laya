@@ -4,20 +4,11 @@ memory = Memory()
 
 memory.load()
 
-memory.remember(
-    "my name",
-    "Surya"
-)
+memory.remember("my name", "Surya")
 
-memory.remember(
-    "exam",
-    "Tomorrow"
-)
+memory.remember("exam", "Tomorrow")
 
-memory.remember(
-    "hello",
-    "there"
-)
+memory.remember("hello", "there")
 
 print()
 

@@ -31,5 +31,5 @@ class ConversationSession:
             "language": self.language,
             "emotion": self.emotion,
             "turns": self.turns,
-            "started": self.started.isoformat()
+            "started": self.started.isoformat(),
         }

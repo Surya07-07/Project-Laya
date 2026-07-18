@@ -1,16 +1,12 @@
 class MemoryPermission:
 
-
     def __init__(self):
 
         self.pending = None
 
-
-
     def check(self, text):
 
         sensitive = [
-
             "password",
             "bank",
             "account number",
@@ -19,13 +15,10 @@ class MemoryPermission:
             "otp",
             "pin",
             "card",
-            "private key"
-
+            "private key",
         ]
 
-
         text = text.lower()
-
 
         for word in sensitive:
 
@@ -34,21 +27,11 @@ class MemoryPermission:
                 self.pending = text
 
                 return {
-
                     "status": "permission_required",
-
-                    "reason": f"Sensitive data detected: {word}"
-
+                    "reason": f"Sensitive data detected: {word}",
                 }
 
-
-        return {
-
-            "status": "approved"
-
-        }
-
-
+        return {"status": "approved"}
 
     def approve(self):
 
@@ -57,8 +40,6 @@ class MemoryPermission:
         self.pending = None
 
         return data
-
-
 
     def reject(self):
 

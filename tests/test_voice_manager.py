@@ -1,6 +1,5 @@
 from core.voice.manager import VoiceManager
 
-
 voice = VoiceManager()
 
 voice.start()
